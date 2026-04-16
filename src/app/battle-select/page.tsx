@@ -30,7 +30,7 @@ export default function BattleSelectPage() {
               </h1>
 
               <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-300 sm:text-base">
-                選擇一個詞庫開始冒險。出戰角色可在收藏頁自由設定，但不是開始戰鬥的前置條件。
+                選擇一個詞庫開始冒險。出戰乾員可在收藏頁自由設定。
               </p>
             </div>
 
@@ -166,7 +166,7 @@ export default function BattleSelectPage() {
                   href="/collection"
                   className="rounded-2xl bg-gradient-to-r from-pink-500 to-rose-500 px-6 py-3 text-sm font-bold text-white shadow-lg transition duration-300 hover:-translate-y-0.5 hover:shadow-xl sm:text-base"
                 >
-                  去設置出戰角色
+                  去設置出戰乾員
                 </Link>
               </div>
             </section>

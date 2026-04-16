@@ -89,7 +89,7 @@ export default function BattlePage() {
         return;
       }
 
-      setMessage("回答正確！你攻擊了怪物！");
+      setMessage("回答正確！你攻擊了整合運動！");
     } else {
       const newPlayerHp = Math.max(playerHp - wrongDamage, 0);
       setPlayerHp(newPlayerHp);
@@ -100,12 +100,12 @@ export default function BattlePage() {
       });
 
       if (newPlayerHp === 0) {
-        setMessage("你被怪物打敗了！錯題已自動加入當前詞庫收藏本。");
+        setMessage("博士，你被擊敗了！正在與羅德島失去連接...錯題已自動加入當前詞庫收藏本。");
         setGameOver(true);
         return;
       }
 
-      setMessage("回答錯誤！怪物攻擊了你！錯題已自動加入當前詞庫收藏本。");
+      setMessage("回答錯誤！整合運動攻擊了你！錯題已自動加入當前詞庫收藏本。");
     }
 
     setQuestion(generateQuestion(currentSet.words));

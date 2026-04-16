@@ -23,15 +23,15 @@ const quickActions = [
   },
   {
     href: "/gacha",
-    label: "抽卡系統",
-    sublabel: "600 代幣抽一次，收集角色",
+    label: "尋訪系統",
+    sublabel: "600 合成玉抽一次，拯救乾員",
     style:
       "from-purple-500 via-violet-500 to-indigo-500 text-white shadow-[0_0_30px_rgba(139,92,246,0.28)]",
   },
   {
     href: "/collection",
-    label: "角色收藏",
-    sublabel: "查看已獲得角色與星級",
+    label: "乾員收藏",
+    sublabel: "查看已獲得乾員與星級",
     style:
       "from-pink-500 via-rose-500 to-orange-400 text-white shadow-[0_0_30px_rgba(244,114,182,0.28)]",
   },
@@ -70,34 +70,34 @@ export default function Home() {
         <div className="grid items-stretch gap-6 xl:grid-cols-[1.15fr_0.85fr]">
           <div className="game-panel p-6 sm:p-8 lg:p-10">
             <div className="inline-flex items-center gap-2 rounded-full border border-fuchsia-400/20 bg-fuchsia-400/10 px-4 py-2 text-xs font-semibold tracking-[0.18em] text-fuchsia-200 uppercase">
-              Word RPG Adventure
+              ArkWords:Endfield 方舟.終末詞界
             </div>
 
             <h1 className="mt-5 max-w-3xl text-4xl font-black leading-tight text-white sm:text-5xl lg:text-6xl">
-              把背單詞，
+              【已連接至羅德島】博士，您好。
               <span className="bg-gradient-to-r from-violet-300 via-fuchsia-300 to-cyan-300 bg-clip-text text-transparent">
-                變成一場冒險
+                你願意用單詞，拯救失落的泰拉大陸嗎？
               </span>
             </h1>
 
             <p className="mt-5 max-w-2xl text-base leading-8 text-slate-300 sm:text-lg">
-              用答題戰鬥累積代幣，用抽卡收集角色，用收藏本反覆特訓。
-              這不是單純的詞表網站，而是你的專屬單詞養成 RPG。
+              答題戰鬥累積合成玉，廢墟中尋找乾員。
+              注意，此詞表網站是你在終末之時與方舟的最後連結。
             </p>
 
             <div className="mt-8 flex flex-wrap gap-4">
               <Link href="/battle-select" className="primary-button">
-                立即開始冒險
+                終端：立即開始冒險
               </Link>
 
               <Link href="/vocabulary" className="secondary-button">
-                前往詞庫管理
+                資源：前往詞庫管理
               </Link>
             </div>
 
             <div className="mt-8 grid gap-4 sm:grid-cols-3">
               <div className="stat-card">
-                <p className="stat-label">目前代幣</p>
+                <p className="stat-label">目前合成玉</p>
                 <p className="stat-value">
                   {hasHydrated ? coins.toLocaleString() : "讀取中..."}
                 </p>
@@ -128,10 +128,10 @@ export default function Home() {
                   Hero Preview
                 </p>
                 <h2 className="mt-3 text-2xl font-bold text-white sm:text-3xl">
-                  你的單詞勇者正在待命
+                  你的看板娘/郎正在待命
                 </h2>
                 <p className="mt-3 text-sm leading-7 text-slate-300 sm:text-base">
-                  這是一個立繪
+                  這是你推的立繪
                 </p>
               </div>
 
@@ -211,7 +211,7 @@ export default function Home() {
               冒險獎勵
             </p>
             <h3 className="mt-2 text-xl font-bold text-white">普通冒險</h3>
-            <p className="mt-3 text-slate-300">答題戰鬥成功可獲得 180 代幣。</p>
+            <p className="mt-3 text-slate-300">擊敗整合運動成功可獲得 180 合成玉。</p>
           </div>
 
           <div className="game-panel p-6">
@@ -224,11 +224,11 @@ export default function Home() {
 
           <div className="game-panel p-6">
             <p className="text-sm font-semibold uppercase tracking-[0.18em] text-fuchsia-200/80">
-              抽卡消耗
+              尋訪消耗
             </p>
-            <h3 className="mt-2 text-xl font-bold text-white">角色召喚</h3>
+            <h3 className="mt-2 text-xl font-bold text-white">乾員尋訪</h3>
             <p className="mt-3 text-slate-300">
-              每次抽卡消耗 600 代幣，稀有角色等你帶回家。
+              每次尋訪消耗 600 合成玉。博士，乾員們等你回家。
             </p>
           </div>
         </div>

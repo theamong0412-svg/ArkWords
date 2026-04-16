@@ -123,11 +123,11 @@ export default function CollectionPage() {
               </div>
 
               <h1 className="mt-4 text-3xl font-black text-white sm:text-4xl">
-                角色收藏
+                乾員收藏
               </h1>
 
               <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-300 sm:text-base">
-                在這裡管理角色、設置當前出戰角色。戰鬥頁只會顯示你目前選中的出戰角色動畫。
+                在這裡管理乾員、設置當前出戰乾員。戰鬥頁會顯示你目前選中的出戰乾員形象。
               </p>
             </div>
 
@@ -165,11 +165,11 @@ export default function CollectionPage() {
         <section className="game-panel p-5 sm:p-6">
           <div className="grid gap-4 lg:grid-cols-2">
             <div className="rounded-2xl border border-amber-300/15 bg-amber-400/10 p-4 text-sm leading-7 text-amber-100">
-              每次解雇 1 張角色，可回收 <span className="font-black">20 代幣</span>。
+              每解雇一名乾員，他們會爲你留下 <span className="font-black">20 合成玉。但你真的要這麽做嗎，博士？</span>。
             </div>
 
             <div className="rounded-2xl border border-violet-300/15 bg-violet-400/10 p-4 text-sm leading-7 text-violet-100">
-              當前出戰角色：
+              當前出戰乾員：
               <span className="ml-2 font-black text-white">
                 {activeCharacter?.name ?? "尚未設定"}
               </span>
@@ -184,16 +184,16 @@ export default function CollectionPage() {
             </div>
 
             <h2 className="mt-6 text-2xl font-black text-white sm:text-3xl">
-              你還沒有任何角色
+              你還沒有任何乾員
             </h2>
 
             <p className="mt-4 text-slate-300">
-              先去抽卡，把第一位角色帶回收藏頁吧。
+              先去抽卡，把第一位乾員帶回收藏頁吧。
             </p>
 
             <div className="mt-8 flex flex-wrap justify-center gap-3">
               <Link href="/gacha" className="primary-button">
-                前往抽卡
+                前往尋訪
               </Link>
 
               <Link href="/" className="secondary-button">
@@ -242,12 +242,12 @@ export default function CollectionPage() {
                         {character.name}
                       </h2>
                       <p className="mt-2 text-sm text-slate-400">
-                        角色編號：#{character.id}
+                        乾員編號：#{character.id}
                       </p>
                       <p className="mt-3 text-sm leading-7 text-slate-300">
-                        收藏頁與抽卡頁之後只顯示靜態立繪。
+                        收藏頁與抽卡頁會顯示靜態立繪。
                         <br />
-                        戰鬥頁才會使用對應角色動畫。
+                        戰鬥頁會顯示對應角色動畫。
                       </p>
                     </div>
 
@@ -267,7 +267,7 @@ export default function CollectionPage() {
                         onClick={() => handleDismissCharacter(character.id)}
                         className="rounded-2xl bg-gradient-to-r from-rose-500 to-red-500 px-5 py-3 text-sm font-bold text-white shadow-lg transition duration-300 hover:-translate-y-0.5 hover:shadow-xl"
                       >
-                        解雇 1 張（+20 代幣）
+                        解雇（+20合成玉）
                       </button>
                     </div>
                   </article>
@@ -278,7 +278,7 @@ export default function CollectionPage() {
             <section className="game-panel p-5 sm:p-6">
               <div className="flex flex-wrap justify-center gap-3">
                 <Link href="/gacha" className="primary-button">
-                  繼續抽卡
+                  繼續尋訪
                 </Link>
 
                 <Link
