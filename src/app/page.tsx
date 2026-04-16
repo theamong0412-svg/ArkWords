@@ -131,9 +131,7 @@ export default function Home() {
                   你的單詞勇者正在待命
                 </h2>
                 <p className="mt-3 text-sm leading-7 text-slate-300 sm:text-base">
-                  這裡先放角色立繪占位。之後你只要把自己的角色圖放進
-                  `public`，我就能幫你把首頁、battle、gacha、collection
-                  全部接上。
+                  這是一個立繪
                 </p>
               </div>
 
