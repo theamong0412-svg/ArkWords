@@ -158,15 +158,15 @@ export default function NotebookBattlePage() {
             <div className="min-w-0">
               {/* 第一個 panel：角色 / 單詞 / 怪物 */}
               <div className="rounded-[28px] border border-white/10 bg-gradient-to-b from-white/5 to-slate-950/35 p-4 sm:p-5">
-                <div className="grid items-center gap-4 lg:grid-cols-[220px_1fr_220px]">
+                <div className="grid items-center gap-4 lg:grid-cols-[280px_minmax(0,1fr)_280px]">
                   {/* 玩家 */}
                   <div className="flex flex-col items-center text-center">
-                    <div className="flex h-28 w-28 items-center justify-center overflow-hidden rounded-[24px] border border-cyan-300/25 bg-cyan-400/10 shadow-[0_0_24px_rgba(34,211,238,0.18)] sm:h-32 sm:w-32">
+                    <div className="flex h-40 w-40 items-center justify-center overflow-hidden rounded-[24px] border border-cyan-300/25 bg-cyan-400/10 shadow-[0_0_24px_rgba(34,211,238,0.18)] sm:h-44 sm:w-44">
                       {playerBattleMedia ? (
                         <CharacterVideo
                           src={playerBattleMedia}
                           alt={playerDisplayName}
-                          className="h-full w-full object-contain scale-150"
+                          className="h-full w-full object-contain scale-220"
                         />
                       ) : (
                         <span className="text-5xl sm:text-6xl">🧙</span>
@@ -176,7 +176,7 @@ export default function NotebookBattlePage() {
                     <p className="mt-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-cyan-200/75">
                       Player
                     </p>
-                    <h2 className="mt-1 text-3xl font-black text-white">
+                    <h2 className="mt-1 text-2xl font-black text-white">
                       {playerDisplayName}
                     </h2>
 
@@ -212,7 +212,7 @@ export default function NotebookBattlePage() {
 
                     <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
                       <div className="rounded-full border border-amber-300/15 bg-amber-400/10 px-3 py-1.5 text-xs font-semibold text-amber-100">
-                        代幣：{hasHydrated ? coins.toLocaleString() : "讀取中..."}
+                        合成玉：{hasHydrated ? coins.toLocaleString() : "讀取中..."}
                       </div>
                       <div className="rounded-full border border-violet-300/15 bg-violet-400/10 px-3 py-1.5 text-xs font-semibold text-violet-100">
                         收藏本：{currentSet.name}
@@ -222,14 +222,14 @@ export default function NotebookBattlePage() {
 
                   {/* 怪物 */}
                   <div className="flex flex-col items-center text-center">
-                    <div className="flex h-28 w-28 items-center justify-center rounded-[24px] border border-rose-300/25 bg-rose-400/10 text-5xl shadow-[0_0_24px_rgba(244,63,94,0.18)] sm:h-32 sm:w-32 sm:text-6xl">
+                    <div className="flex h-40 w-40 items-center justify-center rounded-[24px] border border-rose-300/25 bg-rose-400/10 text-5xl shadow-[0_0_24px_rgba(244,63,94,0.18)] sm:h-44 sm:w-44 sm:text-6xl">
                       👾
                     </div>
 
                     <p className="mt-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-rose-200/75">
                       Monster
                     </p>
-                    <h2 className="mt-1 text-3xl font-black text-white">
+                    <h2 className="mt-1 text-2xl font-black text-white">
                       怪物
                     </h2>
 
