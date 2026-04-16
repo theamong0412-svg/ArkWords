@@ -274,24 +274,24 @@ export default function CollectionPage() {
               })}
             </section>
 
-            <section className="game-panel p-5 sm:p-6">
-              <div className="flex flex-wrap justify-center gap-3">
-                <Link href="/gacha" className="primary-button">
-                  繼續抽卡
-                </Link>
+          <section className="game-panel p-5 sm:p-6">
+  <div className="flex flex-wrap justify-center gap-3">
+    <Link href="/gacha" className="primary-button">
+      繼續抽卡
+    </Link>
 
-                <Link
-                  href="/battle-select"
-                  className="rounded-2xl bg-gradient-to-r from-sky-500 to-blue-500 px-6 py-3 text-sm font-bold text-white shadow-lg transition duration-300 hover:-translate-y-0.5 hover:shadow-xl sm:text-base"
-                >
-                  去冒險
-                </Link>
+    <Link
+      href="/battle-select"
+      className="rounded-2xl bg-gradient-to-r from-sky-500 to-blue-500 px-6 py-3 text-sm font-bold text-white shadow-lg transition duration-300 hover:-translate-y-0.5 hover:shadow-xl sm:text-base"
+    >
+      去冒險
+    </Link>
 
-                <Link href="/" className="secondary-button">
-                  回首頁
-                </Link>
-              </div>
-            </section>
+    <Link href="/" className="secondary-button">
+      回首頁
+    </Link>
+  </div>
+</section>
           </>
         )}
       </div>
