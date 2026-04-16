@@ -1,299 +1,356 @@
 "use client";
+/* eslint-disable react-hooks/set-state-in-effect */
 
 import Link from "next/link";
-import { useMemo } from "react";
-import { useCharacterStore } from "../../store/characterStore";
+import { useEffect, useMemo, useState } from "react";
 import { useCurrencyStore } from "../../store/currencyStore";
+import { useVocabularyStore } from "../../store/vocabularyStore";
+import { useVocabularySetStore } from "../../store/vocabularySetStore";
+import { useNotebookStore } from "../../store/notebookStore";
+import { useCharacterStore } from "../../store/characterStore";
 import { useActiveCharacterStore } from "../../store/activeCharacterStore";
-import type { GachaCharacter } from "../../data/gachaPool";
+import { generateQuestion } from "../../lib/question";
+import { GAME_BALANCE } from "../../config/gameBalance";
+import AnswerOptions from "../../components/battle/AnswerOptions";
+import CharacterVideo from "../../components/ui/CharacterVideo";
 
-type GroupedCharacter = {
-  id: number;
-  name: string;
-  stars: 3 | 4 | 5 | 6;
-  count: number;
-  portrait?: string;
-  battleMedia?: string;
-};
-
-function getStarStyle(stars: 3 | 4 | 5 | 6) {
-  switch (stars) {
-    case 3:
-      return "border-slate-300/20 bg-slate-400/15 text-slate-200";
-    case 4:
-      return "border-sky-300/20 bg-sky-400/15 text-sky-200";
-    case 5:
-      return "border-violet-300/20 bg-violet-400/15 text-violet-200";
-    case 6:
-      return "border-amber-300/20 bg-amber-400/15 text-amber-100";
-    default:
-      return "border-slate-300/20 bg-slate-400/15 text-slate-200";
-  }
-}
-
-function getCardStyle(stars: 3 | 4 | 5 | 6) {
-  switch (stars) {
-    case 3:
-      return "border-slate-300/15 bg-gradient-to-br from-slate-400/10 via-slate-900/50 to-slate-950/80";
-    case 4:
-      return "border-sky-300/15 bg-gradient-to-br from-sky-400/10 via-slate-900/50 to-slate-950/80";
-    case 5:
-      return "border-violet-300/15 bg-gradient-to-br from-violet-400/10 via-fuchsia-500/10 to-slate-950/80";
-    case 6:
-      return "border-amber-300/20 bg-gradient-to-br from-amber-300/15 via-orange-400/10 to-slate-950/80";
-    default:
-      return "border-slate-300/15 bg-gradient-to-br from-slate-400/10 via-slate-900/50 to-slate-950/80";
-  }
-}
-
-function getCharacterIcon(stars: 3 | 4 | 5 | 6) {
-  switch (stars) {
-    case 6:
-      return "👑";
-    case 5:
-      return "✨";
-    case 4:
-      return "🌟";
-    case 3:
-      return "⚔️";
-    default:
-      return "⚔️";
-  }
-}
-
-function groupCharacters(characters: GachaCharacter[]): GroupedCharacter[] {
-  const map = new Map<number, GroupedCharacter>();
-
-  for (const character of characters) {
-    const existing = map.get(character.id);
-
-    if (existing) {
-      existing.count += 1;
-    } else {
-      map.set(character.id, {
-        id: character.id,
-        name: character.name,
-        stars: character.stars,
-        count: 1,
-        portrait: character.portrait,
-        battleMedia: character.battleMedia,
-      });
-    }
-  }
-
-  return Array.from(map.values()).sort((a, b) => {
-    if (b.stars !== a.stars) {
-      return b.stars - a.stars;
-    }
-    return a.id - b.id;
-  });
-}
-
-export default function CollectionPage() {
-  const { ownedCharacters, removeCharacterById } = useCharacterStore();
+export default function BattlePage() {
   const { coins, addCoins, hasHydrated } = useCurrencyStore();
-  const { activeCharacterId, setActiveCharacterId } = useActiveCharacterStore();
+  const { selectedSetId } = useVocabularyStore();
+  const { sets } = useVocabularySetStore();
+  const { addBookmarkedWord } = useNotebookStore();
+  const { ownedCharacters } = useCharacterStore();
+  const { activeCharacterId } = useActiveCharacterStore();
 
-  const groupedCharacters = useMemo(() => {
-    return groupCharacters(ownedCharacters);
-  }, [ownedCharacters]);
+  const currentSet = useMemo(() => {
+    return sets.find((setItem) => setItem.id === selectedSetId) ?? sets[0];
+  }, [sets, selectedSetId]);
 
-  const activeCharacter = groupedCharacters.find(
-    (character) => character.id === activeCharacterId
+  const activeCharacter = useMemo(() => {
+    if (!activeCharacterId) return null;
+    return ownedCharacters.find((character) => character.id === activeCharacterId) ?? null;
+  }, [ownedCharacters, activeCharacterId]);
+
+  const playerDisplayName = activeCharacter?.name ?? "玩家";
+  const playerBattleMedia = activeCharacter?.battleMedia;
+
+  const playerMaxHp = GAME_BALANCE.battle.playerMaxHp;
+  const monsterMaxHp = GAME_BALANCE.battle.monsterMaxHp;
+  const correctDamage = GAME_BALANCE.battle.correctDamage;
+  const wrongDamage = GAME_BALANCE.battle.wrongDamage;
+  const rewardCoins = GAME_BALANCE.battle.rewardCoins;
+
+  const [playerHp, setPlayerHp] = useState<number>(playerMaxHp);
+  const [monsterHp, setMonsterHp] = useState<number>(monsterMaxHp);
+  const [message, setMessage] = useState("請選擇正確的中文意思");
+  const [gameOver, setGameOver] = useState(false);
+  const [question, setQuestion] = useState(() =>
+    currentSet && currentSet.words.length >= 4
+      ? generateQuestion(currentSet.words)
+      : null
   );
 
-  function handleDismissCharacter(characterId: number) {
-    addCoins(20);
-    removeCharacterById(characterId);
+  useEffect(() => {
+    if (currentSet && currentSet.words.length >= 4) {
+      setQuestion(generateQuestion(currentSet.words));
+      setMessage("請選擇正確的中文意思");
+      setGameOver(false);
+      setPlayerHp(playerMaxHp);
+      setMonsterHp(monsterMaxHp);
+    } else {
+      setQuestion(null);
+    }
+  }, [currentSet, playerMaxHp, monsterMaxHp]);
+
+  function checkAnswer(option: string) {
+    if (gameOver || !question || !currentSet || currentSet.words.length < 4) {
+      return;
+    }
+
+    if (option === question.correctAnswer) {
+      const newMonsterHp = Math.max(monsterHp - correctDamage, 0);
+      setMonsterHp(newMonsterHp);
+
+      if (newMonsterHp === 0) {
+        addCoins(rewardCoins);
+        setMessage(`你打敗怪物了！獲得 ${rewardCoins} 代幣！`);
+        setGameOver(true);
+        return;
+      }
+
+      setMessage("回答正確！你攻擊了怪物！");
+    } else {
+      const newPlayerHp = Math.max(playerHp - wrongDamage, 0);
+      setPlayerHp(newPlayerHp);
+
+      addBookmarkedWord(currentSet.id, {
+        word: question.word,
+        meaning: question.correctAnswer,
+      });
+
+      if (newPlayerHp === 0) {
+        setMessage("你被怪物打敗了！錯題已自動加入當前詞庫收藏本。");
+        setGameOver(true);
+        return;
+      }
+
+      setMessage("回答錯誤！怪物攻擊了你！錯題已自動加入當前詞庫收藏本。");
+    }
+
+    setQuestion(generateQuestion(currentSet.words));
   }
 
-  function handleSetActiveCharacter(characterId: number) {
-    setActiveCharacterId(characterId);
+  function restartGame() {
+    if (!currentSet || currentSet.words.length < 4) return;
+
+    setPlayerHp(playerMaxHp);
+    setMonsterHp(monsterMaxHp);
+    setMessage("請選擇正確的中文意思");
+    setQuestion(generateQuestion(currentSet.words));
+    setGameOver(false);
   }
 
-  return (
-    <main className="px-3 py-4 sm:px-6 lg:px-8 lg:py-6">
-      <div className="mx-auto flex w-full max-w-6xl flex-col gap-4">
-        <section className="game-panel overflow-hidden p-5 sm:p-6">
-          <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
-            <div>
-              <div className="inline-flex items-center gap-2 rounded-full border border-pink-300/20 bg-pink-400/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-pink-200/80">
-                Character Archive
-              </div>
+  const playerPercent = Math.max(0, (playerHp / playerMaxHp) * 100);
+  const monsterPercent = Math.max(0, (monsterHp / monsterMaxHp) * 100);
 
-              <h1 className="mt-4 text-3xl font-black text-white sm:text-4xl">
-                角色收藏
-              </h1>
-
-              <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-300 sm:text-base">
-                在這裡管理角色、設置當前出戰角色。戰鬥頁只會顯示你目前選中的出戰角色動畫。
-              </p>
-            </div>
-
-            <div className="grid gap-3 sm:grid-cols-3 lg:min-w-[520px]">
-              <div className="rounded-2xl border border-cyan-300/15 bg-cyan-400/10 p-4">
-                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-cyan-200/70">
-                  Unique Characters
-                </p>
-                <p className="mt-2 text-2xl font-black text-white">
-                  {groupedCharacters.length}
-                </p>
-              </div>
-
-              <div className="rounded-2xl border border-pink-300/15 bg-pink-400/10 p-4">
-                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-pink-200/70">
-                  Total Owned
-                </p>
-                <p className="mt-2 text-2xl font-black text-white">
-                  {ownedCharacters.length}
-                </p>
-              </div>
-
-              <div className="rounded-2xl border border-amber-300/15 bg-amber-400/10 p-4">
-                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-amber-200/70">
-                  Coins
-                </p>
-                <p className="mt-2 text-2xl font-black text-amber-100">
-                  {hasHydrated ? coins : "讀取中..."}
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section className="game-panel p-5 sm:p-6">
-          <div className="grid gap-4 lg:grid-cols-2">
-            <div className="rounded-2xl border border-amber-300/15 bg-amber-400/10 p-4 text-sm leading-7 text-amber-100">
-              每次解雇 1 張角色，可回收 <span className="font-black">20 代幣</span>。
-            </div>
-
-            <div className="rounded-2xl border border-violet-300/15 bg-violet-400/10 p-4 text-sm leading-7 text-violet-100">
-              當前出戰角色：
-              <span className="ml-2 font-black text-white">
-                {activeCharacter?.name ?? "尚未設定"}
-              </span>
-            </div>
-          </div>
-        </section>
-
-        {groupedCharacters.length === 0 ? (
+  if (!currentSet) {
+    return (
+      <main className="px-4 py-8 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-3xl">
           <section className="game-panel p-8 text-center sm:p-10">
-            <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-full border border-white/10 bg-white/5 text-5xl">
-              🎴
+            <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full border border-white/10 bg-white/5 text-4xl">
+              ⚠️
             </div>
-
-            <h2 className="mt-6 text-2xl font-black text-white sm:text-3xl">
-              你還沒有任何角色
-            </h2>
-
-            <p className="mt-4 text-slate-300">
-              先去抽卡，把第一位角色帶回收藏頁吧。
-            </p>
-
+            <h1 className="mt-5 text-3xl font-black text-white">開始冒險</h1>
+            <p className="mt-4 text-slate-300">目前沒有可用詞庫。</p>
             <div className="mt-8 flex flex-wrap justify-center gap-3">
-              <Link href="/gacha" className="primary-button">
-                前往抽卡
-              </Link>
-
               <Link href="/" className="secondary-button">
-                回首頁
+                返回主頁
               </Link>
             </div>
           </section>
-        ) : (
-          <>
-            <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
-              {groupedCharacters.map((character) => {
-                const isActive = activeCharacterId === character.id;
+        </div>
+      </main>
+    );
+  }
 
-                return (
-                  <article
-                    key={character.id}
-                    className={`group overflow-hidden rounded-[28px] border p-5 transition duration-300 hover:-translate-y-1 hover:shadow-2xl ${getCardStyle(
-                      character.stars
-                    )}`}
-                  >
-                    <div className="flex items-start justify-between gap-3">
-                      <div
-                        className={`inline-flex rounded-full border px-4 py-2 text-sm font-bold ${getStarStyle(
-                          character.stars
-                        )}`}
-                      >
-                        {character.stars} 星
-                      </div>
+  if (currentSet.words.length < 4 || !question) {
+    return (
+      <main className="px-4 py-8 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-3xl">
+          <section className="game-panel p-8 text-center sm:p-10">
+            <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full border border-amber-300/20 bg-amber-300/10 text-4xl">
+              📚
+            </div>
 
-                      <div className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-sm font-semibold text-slate-300">
-                        × {character.count}
-                      </div>
+            <p className="mt-5 text-sm font-semibold uppercase tracking-[0.2em] text-amber-200/80">
+              Battle Locked
+            </p>
+
+            <h1 className="mt-2 text-3xl font-black text-white sm:text-4xl">
+              無法開始冒險
+            </h1>
+
+            <p className="mt-4 text-slate-200">
+              當前詞庫：<span className="font-bold text-white">{currentSet.name}</span>
+            </p>
+
+            <p className="mt-3 text-slate-300">
+              這個詞庫的單詞數量不足 4 個，暫時無法生成題目。
+            </p>
+
+            <div className="mt-8 flex flex-wrap justify-center gap-3">
+              <Link href="/vocabulary" className="primary-button">
+                去詞庫管理
+              </Link>
+              <Link href="/" className="secondary-button">
+                返回主頁
+              </Link>
+            </div>
+          </section>
+        </div>
+      </main>
+    );
+  }
+
+  return (
+    <main className="px-3 py-3 sm:px-5 lg:px-8 lg:py-4">
+      <div className="mx-auto flex w-full max-w-7xl flex-col gap-3">
+        <section className="game-panel overflow-hidden p-3 sm:p-4 lg:p-5">
+          <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-3 xl:flex-row xl:items-start xl:justify-between">
+              <div className="w-full xl:max-w-[320px]">
+                <div className="rounded-[24px] border border-cyan-300/15 bg-gradient-to-br from-cyan-400/10 to-slate-950/60 p-3 sm:p-4">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-cyan-300/25 bg-cyan-400/10 shadow-[0_0_25px_rgba(34,211,238,0.18)]">
+                      {playerBattleMedia ? (
+                        <CharacterVideo
+                          src={playerBattleMedia}
+                          alt={playerDisplayName}
+                          className="h-full w-full object-contain scale-110"
+                        />
+                      ) : (
+                        <span className="text-4xl">🧙</span>
+                      )}
                     </div>
 
-                    <div className="mt-5 flex items-center justify-center">
-                      <div className="relative flex h-44 w-full items-center justify-center overflow-hidden rounded-[24px] border border-white/10 bg-slate-950/40">
-                        <div className="absolute h-32 w-32 rounded-full bg-violet-500/20 blur-3xl" />
-                        <div className="relative z-10 text-6xl">
-                          {getCharacterIcon(character.stars)}
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="mt-5">
-                      <h2 className="text-2xl font-black text-white">
-                        {character.name}
+                    <div className="min-w-0 flex-1">
+                      <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-cyan-200/75">
+                        Player
+                      </p>
+                      <h2 className="mt-1 text-2xl font-black text-white">
+                        {playerDisplayName}
                       </h2>
-                      <p className="mt-2 text-sm text-slate-400">
-                        角色編號：#{character.id}
-                      </p>
-                      <p className="mt-3 text-sm leading-7 text-slate-300">
-                        收藏頁與抽卡頁之後只顯示靜態立繪。
-                        <br />
-                        戰鬥頁才會使用對應角色動畫。
-                      </p>
+                    </div>
+                  </div>
+
+                  <div className="mt-3">
+                    <div className="mb-1.5 flex items-center justify-between text-xs font-semibold uppercase tracking-[0.14em] text-slate-300">
+                      <span>HP</span>
+                      <span>
+                        {playerHp} / {playerMaxHp}
+                      </span>
                     </div>
 
-                    <div className="mt-6 flex flex-wrap gap-3">
-                      <button
-                        onClick={() => handleSetActiveCharacter(character.id)}
-                        className={
-                          isActive
-                            ? "rounded-2xl bg-gradient-to-r from-violet-500 to-fuchsia-500 px-5 py-3 text-sm font-bold text-white shadow-lg"
-                            : "rounded-2xl bg-gradient-to-r from-sky-500 to-blue-500 px-5 py-3 text-sm font-bold text-white shadow-lg transition duration-300 hover:-translate-y-0.5 hover:shadow-xl"
-                        }
+                    <div className="h-4 overflow-hidden rounded-full border border-white/10 bg-slate-900/70">
+                      <div
+                        className="flex h-full items-center justify-center rounded-full bg-gradient-to-r from-emerald-400 to-green-500 text-[10px] font-bold text-white transition-all duration-500"
+                        style={{ width: `${playerPercent}%` }}
                       >
-                        {isActive ? "當前出戰" : "設為出戰"}
-                      </button>
-
-                      <button
-                        onClick={() => handleDismissCharacter(character.id)}
-                        className="rounded-2xl bg-gradient-to-r from-rose-500 to-red-500 px-5 py-3 text-sm font-bold text-white shadow-lg transition duration-300 hover:-translate-y-0.5 hover:shadow-xl"
-                      >
-                        解雇 1 張（+20 代幣）
-                      </button>
+                        {playerHp}
+                      </div>
                     </div>
-                  </article>
-                );
-              })}
-            </section>
 
-            <section className="game-panel p-5 sm:p-6">
-              <div className="flex flex-wrap justify-center gap-3">
-                <Link href="/gacha" className="primary-button">
-                  繼續抽卡
-                </Link>
-
-                <Link
-                  href="/battle-select"
-                  className="rounded-2xl bg-gradient-to-r from-sky-500 to-blue-500 px-6 py-3 text-sm font-bold text-white shadow-lg transition duration-300 hover:-translate-y-0.5 hover:shadow-xl sm:text-base"
-                >
-                  去冒險
-                </Link>
-
-                <Link href="/" className="secondary-button">
-                  回首頁
-                </Link>
+                    <div className="mt-2 flex gap-1.5">
+                      {Array.from({ length: playerMaxHp }).map((_, index) => (
+                        <span
+                          key={index}
+                          className={`text-lg transition ${
+                            index < playerHp ? "opacity-100" : "opacity-25"
+                          }`}
+                        >
+                          ❤️
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
               </div>
-            </section>
-          </>
-        )}
+
+              <div className="order-3 w-full xl:order-2 xl:flex-1">
+                <div className="rounded-[26px] border border-white/10 bg-gradient-to-b from-white/5 to-slate-950/40 px-4 py-5 text-center sm:px-6 sm:py-6">
+                  <div className="mb-2 inline-flex items-center rounded-full border border-fuchsia-300/15 bg-fuchsia-400/10 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.22em] text-fuchsia-200/75">
+                    Question
+                  </div>
+
+                  <p className="text-sm text-slate-300">
+                    請選擇這個單詞的正確中文意思
+                  </p>
+
+                  <h1 className="mt-3 break-words text-4xl font-black text-white sm:text-5xl xl:text-6xl">
+                    {question.word}
+                  </h1>
+
+                  <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
+                    <div className="rounded-full border border-amber-300/15 bg-amber-400/10 px-3 py-1.5 text-xs font-semibold text-amber-100">
+                      代幣：{hasHydrated ? coins.toLocaleString() : "讀取中..."}
+                    </div>
+                    <div className="rounded-full border border-violet-300/15 bg-violet-400/10 px-3 py-1.5 text-xs font-semibold text-violet-100">
+                      詞庫：{currentSet.name}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="order-2 w-full xl:order-3 xl:max-w-[320px]">
+                <div className="rounded-[24px] border border-rose-300/15 bg-gradient-to-br from-rose-400/10 to-slate-950/60 p-3 sm:p-4">
+                  <div className="flex items-center gap-3 xl:flex-row-reverse">
+                    <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl border border-rose-300/25 bg-rose-400/10 text-4xl shadow-[0_0_25px_rgba(244,63,94,0.18)]">
+                      👾
+                    </div>
+
+                    <div className="min-w-0 flex-1 xl:text-right">
+                      <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-rose-200/75">
+                        Monster
+                      </p>
+                      <h2 className="mt-1 text-2xl font-black text-white">
+                        怪物
+                      </h2>
+                    </div>
+                  </div>
+
+                  <div className="mt-3">
+                    <div className="mb-1.5 flex items-center justify-between text-xs font-semibold uppercase tracking-[0.14em] text-slate-300">
+                      <span>HP</span>
+                      <span>
+                        {monsterHp} / {monsterMaxHp}
+                      </span>
+                    </div>
+
+                    <div className="h-4 overflow-hidden rounded-full border border-white/10 bg-slate-900/70">
+                      <div
+                        className="flex h-full items-center justify-center rounded-full bg-gradient-to-r from-fuchsia-500 to-pink-500 text-[10px] font-bold text-white transition-all duration-500"
+                        style={{ width: `${monsterPercent}%` }}
+                      >
+                        {monsterHp}
+                      </div>
+                    </div>
+
+                    <div className="mt-2 flex gap-1.5 xl:justify-end">
+                      {Array.from({ length: monsterMaxHp }).map((_, index) => (
+                        <span
+                          key={index}
+                          className={`h-2.5 w-2.5 rounded-full transition ${
+                            index < monsterHp
+                              ? "bg-rose-400 shadow-[0_0_10px_rgba(251,113,133,0.7)]"
+                              : "bg-slate-700"
+                          }`}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="grid gap-3 xl:grid-cols-[1fr_290px]">
+              <div className="rounded-[24px] border border-white/10 bg-slate-950/30 p-3 sm:p-4">
+                <AnswerOptions
+                  options={question.options}
+                  onAnswer={checkAnswer}
+                  disabled={gameOver}
+                />
+              </div>
+
+              <div className="flex flex-col gap-3">
+                <div className="rounded-[24px] border border-white/10 bg-white/5 p-4 text-sm leading-7 text-slate-200">
+                  {message}
+                </div>
+
+                <div className="rounded-[24px] border border-white/10 bg-slate-950/35 p-4">
+                  <div className="flex flex-wrap gap-2">
+                    {gameOver && (
+                      <button onClick={restartGame} className="primary-button w-full">
+                        重新開始
+                      </button>
+                    )}
+
+                    <Link
+                      href="/notebook"
+                      className="w-full rounded-2xl bg-gradient-to-r from-amber-500 to-orange-500 px-6 py-3 text-center text-sm font-bold text-white shadow-lg transition duration-300 hover:-translate-y-0.5 hover:shadow-xl"
+                    >
+                      查看收藏本
+                    </Link>
+
+                    <Link href="/" className="secondary-button w-full justify-center">
+                      返回主頁
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
       </div>
     </main>
   );
