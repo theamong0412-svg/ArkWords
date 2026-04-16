@@ -5,14 +5,17 @@ import { persist } from "zustand/middleware";
 
 type ActiveCharacterState = {
   activeCharacterId: number | null;
+  hasHydrated: boolean;
   setActiveCharacterId: (id: number) => void;
   clearActiveCharacterId: () => void;
+  setHasHydrated: (value: boolean) => void;
 };
 
 export const useActiveCharacterStore = create<ActiveCharacterState>()(
   persist(
     (set) => ({
       activeCharacterId: null,
+      hasHydrated: false,
 
       setActiveCharacterId: (id) =>
         set({
@@ -23,9 +26,17 @@ export const useActiveCharacterStore = create<ActiveCharacterState>()(
         set({
           activeCharacterId: null,
         }),
+
+      setHasHydrated: (value) =>
+        set({
+          hasHydrated: value,
+        }),
     }),
     {
       name: "word-rpg-active-character-storage",
+      onRehydrateStorage: () => (state) => {
+        state?.setHasHydrated(true);
+      },
     }
   )
 );

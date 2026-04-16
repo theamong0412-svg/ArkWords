@@ -112,13 +112,13 @@ export default function CollectionPage() {
   }
 
   function handleSetActiveCharacter(characterId: number) {
-    setActiveCharacterId(characterId);
+  setActiveCharacterId(characterId);
 
-    const next = searchParams.get("next");
-    if (next) {
-      router.push(next);
-    }
+  const next = searchParams.get("next");
+  if (next) {
+    router.replace(next);
   }
+}
 
   return (
     <main className="px-3 py-4 sm:px-6 lg:px-8 lg:py-6">

@@ -10,17 +10,19 @@ export default function BattleSelectPage() {
   const router = useRouter();
   const { selectedSetId, setSelectedSetId } = useVocabularyStore();
   const { sets } = useVocabularySetStore();
-  const { activeCharacterId } = useActiveCharacterStore();
+  const { activeCharacterId, hasHydrated } = useActiveCharacterStore();
 
   function handleSelect(setId: string) {
+    if (!hasHydrated) return;
+
     setSelectedSetId(setId);
 
     if (!activeCharacterId) {
-      router.push("/collection?next=/battle");
+      router.replace("/collection?next=/battle");
       return;
     }
 
-    router.push("/battle");
+    router.replace("/battle");
   }
 
   return (
@@ -65,7 +67,13 @@ export default function BattleSelectPage() {
           </div>
         </section>
 
-        {sets.length === 0 ? (
+        {!hasHydrated ? (
+          <section className="game-panel p-8 text-center sm:p-10">
+            <p className="text-lg font-semibold text-slate-200">
+              正在讀取出戰角色資料...
+            </p>
+          </section>
+        ) : sets.length === 0 ? (
           <section className="game-panel p-8 text-center sm:p-10">
             <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-full border border-white/10 bg-white/5 text-5xl">
               ⚔️
@@ -142,10 +150,10 @@ export default function BattleSelectPage() {
 
                     <button
                       onClick={() => handleSelect(setItem.id)}
-                      disabled={!canBattle}
+                      disabled={!canBattle || !hasHydrated}
                       className={[
                         "mt-5 w-full rounded-2xl px-5 py-3 text-sm font-bold transition duration-300 sm:text-base",
-                        canBattle
+                        canBattle && hasHydrated
                           ? "bg-gradient-to-r from-sky-500 to-blue-500 text-white shadow-lg hover:-translate-y-0.5 hover:shadow-xl"
                           : "cursor-not-allowed bg-slate-700 text-slate-300",
                       ].join(" ")}
