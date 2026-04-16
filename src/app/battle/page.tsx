@@ -21,21 +21,21 @@ export default function BattlePage() {
     return sets.find((setItem) => setItem.id === selectedSetId) ?? sets[0];
   }, [sets, selectedSetId]);
 
-  const playerMaxHp: number = GAME_BALANCE.battle.playerMaxHp;
-const monsterMaxHp: number = GAME_BALANCE.battle.monsterMaxHp;
-const correctDamage: number = GAME_BALANCE.battle.correctDamage;
-const wrongDamage: number = GAME_BALANCE.battle.wrongDamage;
-const rewardCoins: number = GAME_BALANCE.battle.rewardCoins;
+  const playerMaxHp = GAME_BALANCE.battle.playerMaxHp;
+  const monsterMaxHp = GAME_BALANCE.battle.monsterMaxHp;
+  const correctDamage = GAME_BALANCE.battle.correctDamage;
+  const wrongDamage = GAME_BALANCE.battle.wrongDamage;
+  const rewardCoins = GAME_BALANCE.battle.rewardCoins;
 
-const [playerHp, setPlayerHp] = useState<number>(playerMaxHp);
-const [monsterHp, setMonsterHp] = useState<number>(monsterMaxHp);
+  const [playerHp, setPlayerHp] = useState(playerMaxHp);
+  const [monsterHp, setMonsterHp] = useState(monsterMaxHp);
   const [message, setMessage] = useState("請選擇正確的中文意思");
   const [gameOver, setGameOver] = useState(false);
- const [question, setQuestion] = useState<ReturnType<typeof generateQuestion> | null>(() =>
-  currentSet && currentSet.words.length >= 4
-    ? generateQuestion(currentSet.words)
-    : null
-);
+  const [question, setQuestion] = useState(() =>
+    currentSet && currentSet.words.length >= 4
+      ? generateQuestion(currentSet.words)
+      : null
+  );
 
   useEffect(() => {
     if (currentSet && currentSet.words.length >= 4) {
@@ -101,7 +101,13 @@ const [monsterHp, setMonsterHp] = useState<number>(monsterMaxHp);
     return (
       <main className="min-h-screen bg-blue-50 p-8 flex items-center justify-center">
         <div className="bg-white rounded-2xl shadow-xl p-8 text-center">
-          <p className="text-lg text-slate-700">目前沒有可用詞庫。</p>
+          <p className="text-lg text-slate-700 mb-6">目前沒有可用詞庫。</p>
+          <Link
+            href="/"
+            className="bg-slate-600 text-white px-5 py-3 rounded-xl hover:bg-slate-700 transition"
+          >
+            返回主頁
+          </Link>
         </div>
       </main>
     );
@@ -116,6 +122,21 @@ const [monsterHp, setMonsterHp] = useState<number>(monsterMaxHp);
           <p className="text-slate-600 mb-6">
             這個詞庫的單詞數量不足 4 個，無法生成題目。
           </p>
+
+          <div className="flex justify-center gap-4 flex-wrap">
+            <Link
+              href="/vocabulary"
+              className="bg-green-600 text-white px-5 py-3 rounded-xl hover:bg-green-700 transition"
+            >
+              去詞庫管理
+            </Link>
+            <Link
+              href="/"
+              className="bg-slate-600 text-white px-5 py-3 rounded-xl hover:bg-slate-700 transition"
+            >
+              返回主頁
+            </Link>
+          </div>
         </div>
       </main>
     );
@@ -181,6 +202,13 @@ const [monsterHp, setMonsterHp] = useState<number>(monsterMaxHp);
               className="bg-amber-600 text-white px-5 py-2 rounded-xl hover:bg-amber-700 transition"
             >
               查看收藏本
+            </Link>
+
+            <Link
+              href="/"
+              className="bg-slate-600 text-white px-5 py-2 rounded-xl hover:bg-slate-700 transition"
+            >
+              返回主頁
             </Link>
           </div>
         </div>
