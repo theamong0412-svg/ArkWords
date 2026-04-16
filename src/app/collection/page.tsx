@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useMemo } from "react";
 import { useCharacterStore } from "../../store/characterStore";
+import { useCurrencyStore } from "../../store/currencyStore";
 import type { GachaCharacter } from "../../data/gachaPool";
 
 type GroupedCharacter = {
@@ -85,10 +86,16 @@ function groupCharacters(characters: GachaCharacter[]): GroupedCharacter[] {
 
 export default function CollectionPage() {
   const { ownedCharacters, removeCharacterById } = useCharacterStore();
+  const { addCoins } = useCurrencyStore();
 
   const groupedCharacters = useMemo(() => {
     return groupCharacters(ownedCharacters);
   }, [ownedCharacters]);
+
+  function handleDismissCharacter(characterId: number) {
+    addCoins(20);
+    removeCharacterById(characterId);
+  }
 
   return (
     <main className="px-3 py-4 sm:px-6 lg:px-8 lg:py-6">
@@ -128,6 +135,12 @@ export default function CollectionPage() {
                 </p>
               </div>
             </div>
+          </div>
+        </section>
+
+        <section className="game-panel p-5 sm:p-6">
+          <div className="rounded-2xl border border-amber-300/15 bg-amber-400/10 p-4 text-center text-sm leading-7 text-amber-100">
+            每次解雇 1 張角色，可回收 <span className="font-black">20 代幣</span>。
           </div>
         </section>
 
@@ -206,10 +219,10 @@ export default function CollectionPage() {
 
                   <div className="mt-6 flex flex-wrap gap-3">
                     <button
-                      onClick={() => removeCharacterById(character.id)}
+                      onClick={() => handleDismissCharacter(character.id)}
                       className="rounded-2xl bg-gradient-to-r from-rose-500 to-red-500 px-5 py-3 text-sm font-bold text-white shadow-lg transition duration-300 hover:-translate-y-0.5 hover:shadow-xl"
                     >
-                      刪除一張（測試用）
+                      解雇 1 張（+20 代幣）
                     </button>
                   </div>
                 </article>
