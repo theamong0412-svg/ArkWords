@@ -171,7 +171,7 @@ export default function Home() {
                 選擇你的下一步
               </h2>
               <p className="mt-2 text-slate-300">
-                保留你原本的功能入口，但改成更像遊戲選單的首頁布局。
+                遊戲選單
               </p>
             </div>
           </div>
