@@ -16,97 +16,160 @@ export default function BattleSelectPage() {
   }
 
   return (
-    <main className="min-h-screen bg-indigo-50 p-8">
-      <div className="max-w-5xl mx-auto">
-        <h1 className="text-4xl font-bold text-indigo-800 mb-4 text-center">
-          選擇冒險詞庫
-        </h1>
+    <main className="px-3 py-4 sm:px-6 lg:px-8 lg:py-6">
+      <div className="mx-auto flex w-full max-w-6xl flex-col gap-4">
+        <section className="game-panel overflow-hidden p-5 sm:p-6">
+          <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+            <div>
+              <div className="inline-flex items-center gap-2 rounded-full border border-sky-300/20 bg-sky-400/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-sky-200/80">
+                Battle Preparation
+              </div>
 
-        <p className="text-center text-slate-600 mb-8">
-          選擇一個詞庫開始冒險。詞庫內容會和詞庫管理頁同步。
-        </p>
+              <h1 className="mt-4 text-3xl font-black text-white sm:text-4xl">
+                選擇冒險詞庫
+              </h1>
+
+              <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-300 sm:text-base">
+                選擇一個詞庫開始冒險。這裡的詞庫內容會與詞庫管理頁同步。
+              </p>
+            </div>
+
+            <div className="grid gap-3 sm:grid-cols-2 lg:min-w-[360px]">
+              <div className="rounded-2xl border border-violet-300/15 bg-violet-400/10 p-4">
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-violet-200/70">
+                  Total Sets
+                </p>
+                <p className="mt-2 text-2xl font-black text-white">
+                  {sets.length}
+                </p>
+              </div>
+
+              <div className="rounded-2xl border border-cyan-300/15 bg-cyan-400/10 p-4">
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-cyan-200/70">
+                  Current Selected
+                </p>
+                <p className="mt-2 text-lg font-black text-white">
+                  {sets.find((setItem) => setItem.id === selectedSetId)?.name ??
+                    "未選擇"}
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
 
         {sets.length === 0 ? (
-          <div className="bg-white rounded-2xl shadow-xl p-10 text-center">
-            <p className="text-xl text-slate-600 mb-6">目前沒有可用詞庫。</p>
+          <section className="game-panel p-8 text-center sm:p-10">
+            <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-full border border-white/10 bg-white/5 text-5xl">
+              ⚔️
+            </div>
 
-            <div className="flex justify-center gap-4 flex-wrap">
-              <Link
-                href="/vocabulary"
-                className="bg-green-600 text-white px-5 py-3 rounded-xl hover:bg-green-700 transition"
-              >
+            <h2 className="mt-6 text-2xl font-black text-white sm:text-3xl">
+              目前沒有可用詞庫
+            </h2>
+
+            <p className="mt-4 text-slate-300">
+              先去詞庫管理建立一些單詞，再來開始冒險吧。
+            </p>
+
+            <div className="mt-8 flex flex-wrap justify-center gap-3">
+              <Link href="/vocabulary" className="primary-button">
                 前往詞庫管理
               </Link>
 
-              <Link
-                href="/"
-                className="bg-slate-600 text-white px-5 py-3 rounded-xl hover:bg-slate-700 transition"
-              >
+              <Link href="/" className="secondary-button">
                 回首頁
               </Link>
             </div>
-          </div>
+          </section>
         ) : (
           <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            <section className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
               {sets.map((setItem) => {
                 const isSelected = selectedSetId === setItem.id;
                 const canBattle = setItem.words.length >= 4;
 
                 return (
-                  <div
+                  <article
                     key={setItem.id}
-                    className={`bg-white rounded-2xl shadow p-6 border-2 transition ${
+                    className={[
+                      "rounded-[28px] border p-5 transition duration-300",
+                      "hover:-translate-y-1 hover:shadow-2xl",
                       isSelected
-                        ? "border-indigo-500 shadow-lg"
-                        : "border-slate-200"
-                    }`}
+                        ? "border-sky-300/25 bg-gradient-to-br from-sky-400/15 via-cyan-400/10 to-slate-950/80 shadow-[0_0_30px_rgba(56,189,248,0.12)]"
+                        : "border-white/10 bg-white/5",
+                    ].join(" ")}
                   >
-                    <h2 className="text-2xl font-bold text-slate-800 mb-2">
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-bold text-slate-300">
+                        {isSelected ? "當前選中" : "可選詞庫"}
+                      </div>
+
+                      <div
+                        className={`rounded-full px-3 py-1 text-xs font-bold ${
+                          canBattle
+                            ? "border border-emerald-300/20 bg-emerald-400/10 text-emerald-100"
+                            : "border border-rose-300/20 bg-rose-400/10 text-rose-100"
+                        }`}
+                      >
+                        {canBattle ? "可開始冒險" : "至少需要 4 個單詞"}
+                      </div>
+                    </div>
+
+                    <h2 className="mt-5 text-2xl font-black text-white">
                       {setItem.name}
                     </h2>
 
-                    <p className="text-slate-600 mb-3">{setItem.description}</p>
-
-                    <p className="text-sm text-slate-500 mb-2">
-                      單詞數量：{setItem.words.length}
+                    <p className="mt-3 min-h-[56px] text-sm leading-7 text-slate-300">
+                      {setItem.description || "這個詞庫目前還沒有描述。"}
                     </p>
 
-                    <p
-                      className={`text-sm mb-5 ${
-                        canBattle ? "text-green-600" : "text-red-500"
-                      }`}
-                    >
-                      {canBattle ? "可開始冒險" : "至少需要 4 個單詞"}
-                    </p>
+                    <div className="mt-4 rounded-2xl border border-white/10 bg-slate-950/35 p-4">
+                      <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">
+                        Words
+                      </p>
+                      <p className="mt-2 text-2xl font-black text-white">
+                        {setItem.words.length}
+                      </p>
+                    </div>
 
                     <button
                       onClick={() => handleSelect(setItem.id)}
                       disabled={!canBattle}
-                      className="w-full bg-indigo-600 text-white px-4 py-3 rounded-xl hover:bg-indigo-700 transition disabled:bg-slate-400 disabled:cursor-not-allowed"
+                      className={[
+                        "mt-5 w-full rounded-2xl px-5 py-3 text-sm font-bold transition duration-300 sm:text-base",
+                        canBattle
+                          ? "bg-gradient-to-r from-sky-500 to-blue-500 text-white shadow-lg hover:-translate-y-0.5 hover:shadow-xl"
+                          : "cursor-not-allowed bg-slate-700 text-slate-300",
+                      ].join(" ")}
                     >
                       {isSelected ? "使用這個詞庫冒險" : "選擇這個詞庫"}
                     </button>
-                  </div>
+                  </article>
                 );
               })}
-            </div>
+            </section>
 
-            <div className="flex justify-center gap-4 flex-wrap">
-              <Link
-                href="/"
-                className="bg-slate-600 text-white px-5 py-3 rounded-xl hover:bg-slate-700 transition"
-              >
-                回首頁
-              </Link>
+            <section className="game-panel p-5 sm:p-6">
+              <div className="flex flex-wrap justify-center gap-3">
+                <Link href="/" className="secondary-button">
+                  回首頁
+                </Link>
 
-              <Link
-                href="/vocabulary"
-                className="bg-green-600 text-white px-5 py-3 rounded-xl hover:bg-green-700 transition"
-              >
-                詞庫管理
-              </Link>
-            </div>
+                <Link
+                  href="/vocabulary"
+                  className="rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-500 px-6 py-3 text-sm font-bold text-white shadow-lg transition duration-300 hover:-translate-y-0.5 hover:shadow-xl sm:text-base"
+                >
+                  詞庫管理
+                </Link>
+
+                <Link
+                  href="/notebook"
+                  className="rounded-2xl bg-gradient-to-r from-amber-500 to-orange-500 px-6 py-3 text-sm font-bold text-white shadow-lg transition duration-300 hover:-translate-y-0.5 hover:shadow-xl sm:text-base"
+                >
+                  我的收藏本
+                </Link>
+              </div>
+            </section>
           </>
         )}
       </div>
