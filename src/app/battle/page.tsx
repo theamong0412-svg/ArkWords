@@ -11,6 +11,7 @@ import { useCharacterStore } from "../../store/characterStore";
 import { useActiveCharacterStore } from "../../store/activeCharacterStore";
 import { generateQuestion } from "../../lib/question";
 import { GAME_BALANCE } from "../../config/gameBalance";
+import { gachaPool } from "../../data/gachaPool";
 import AnswerOptions from "../../components/battle/AnswerOptions";
 import CharacterVideo from "../../components/ui/CharacterVideo";
 
@@ -26,7 +27,7 @@ export default function BattlePage() {
     return sets.find((setItem) => setItem.id === selectedSetId) ?? sets[0];
   }, [sets, selectedSetId]);
 
-  const activeCharacter = useMemo(() => {
+  const ownedActiveCharacter = useMemo(() => {
     if (!activeCharacterId) return null;
     return (
       ownedCharacters.find((character) => character.id === activeCharacterId) ??
@@ -34,8 +35,15 @@ export default function BattlePage() {
     );
   }, [ownedCharacters, activeCharacterId]);
 
-  const playerDisplayName = activeCharacter?.name ?? "玩家";
-  const playerBattleMedia = activeCharacter?.battleMedia;
+  const activeCharacterMeta = useMemo(() => {
+    if (!activeCharacterId) return null;
+    return gachaPool.find((character) => character.id === activeCharacterId) ?? null;
+  }, [activeCharacterId]);
+
+  const playerDisplayName =
+    activeCharacterMeta?.name ?? ownedActiveCharacter?.name ?? "玩家";
+
+  const playerBattleMedia = activeCharacterMeta?.battleMedia;
 
   const playerMaxHp = GAME_BALANCE.battle.playerMaxHp;
   const monsterMaxHp = GAME_BALANCE.battle.monsterMaxHp;
@@ -169,9 +177,7 @@ export default function BattlePage() {
     <main className="px-3 py-3 sm:px-5 lg:px-8 lg:py-4">
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-3">
         <section className="game-panel overflow-hidden p-3 sm:p-4 lg:p-5">
-          {/* 頂部一行 HUD */}
           <div className="grid gap-3 lg:grid-cols-[1fr_auto_1fr] lg:items-center">
-            {/* 玩家 */}
             <div className="rounded-[24px] border border-cyan-300/15 bg-gradient-to-r from-cyan-400/10 to-slate-950/40 p-3 sm:p-4">
               <div className="flex items-center gap-3">
                 <div className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-cyan-300/25 bg-cyan-400/10 shadow-[0_0_20px_rgba(34,211,238,0.18)]">
@@ -225,12 +231,10 @@ export default function BattlePage() {
               </div>
             </div>
 
-            {/* 中間 VS */}
             <div className="hidden lg:flex h-16 w-16 items-center justify-center rounded-full border border-white/10 bg-white/5 text-lg font-black tracking-[0.2em] text-white">
               VS
             </div>
 
-            {/* 怪物 */}
             <div className="rounded-[24px] border border-rose-300/15 bg-gradient-to-l from-rose-400/10 to-slate-950/40 p-3 sm:p-4">
               <div className="flex items-center gap-3 lg:flex-row-reverse">
                 <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border border-rose-300/25 bg-rose-400/10 text-3xl shadow-[0_0_20px_rgba(244,63,94,0.18)]">
@@ -279,7 +283,6 @@ export default function BattlePage() {
             </div>
           </div>
 
-          {/* 題目區 */}
           <div className="mt-3 rounded-[26px] border border-white/10 bg-gradient-to-b from-white/5 to-slate-950/40 px-4 py-5 text-center sm:px-6 sm:py-6">
             <div className="mb-2 inline-flex items-center rounded-full border border-fuchsia-300/15 bg-fuchsia-400/10 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.22em] text-fuchsia-200/75">
               Question
@@ -301,7 +304,6 @@ export default function BattlePage() {
             </div>
           </div>
 
-          {/* 下方選項與訊息 */}
           <div className="mt-3 grid gap-3 xl:grid-cols-[1fr_290px]">
             <div className="rounded-[24px] border border-white/10 bg-slate-950/30 p-3 sm:p-4">
               <AnswerOptions
