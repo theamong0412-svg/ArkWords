@@ -7,6 +7,8 @@ import { useCharacterStore } from "../../store/characterStore";
 import { useCurrencyStore } from "../../store/currencyStore";
 import { useActiveCharacterStore } from "../../store/activeCharacterStore";
 import type { GachaCharacter } from "../../data/gachaPool";
+import Image from "next/image";
+import { gachaPool } from "../../data/gachaPool";
 
 type GroupedCharacter = {
   id: number;
@@ -204,9 +206,10 @@ export default function CollectionPage() {
         ) : (
           <>
             <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
-              {groupedCharacters.map((character) => {
-                const isActive = activeCharacterId === character.id;
-
+             {groupedCharacters.map((character) => {
+  const isActive = activeCharacterId === character.id;
+  const characterMeta =
+    gachaPool.find((item) => item.id === character.id) ?? character;
                 return (
                   <article
                     key={character.id}
@@ -228,14 +231,27 @@ export default function CollectionPage() {
                       </div>
                     </div>
 
-                    <div className="mt-5 flex items-center justify-center">
-                      <div className="relative flex h-44 w-full items-center justify-center overflow-hidden rounded-[24px] border border-white/10 bg-slate-950/40">
-                        <div className="absolute h-32 w-32 rounded-full bg-violet-500/20 blur-3xl" />
-                        <div className="relative z-10 text-6xl">
-                          {getCharacterIcon(character.stars)}
-                        </div>
-                      </div>
-                    </div>
+                  <div className="mt-5 flex items-center justify-center">
+  <div className="relative flex h-44 w-full items-center justify-center overflow-hidden rounded-[24px] border border-white/10 bg-slate-950/40 p-4">
+    <div className="absolute h-32 w-32 rounded-full bg-violet-500/20 blur-3xl" />
+
+    {characterMeta.portrait ? (
+      <div className="relative z-10 h-full w-full">
+        <Image
+          src={characterMeta.portrait}
+          alt={character.name}
+          fill
+          className="object-contain"
+          sizes="(max-width: 1280px) 50vw, 320px"
+        />
+      </div>
+    ) : (
+      <div className="relative z-10 flex h-full w-full items-center justify-center text-6xl">
+        {getCharacterIcon(character.stars)}
+      </div>
+    )}
+  </div>
+</div>
 
                     <div className="mt-5">
                       <h2 className="text-2xl font-black text-white">

@@ -40,8 +40,7 @@ export default function NotebookBattlePage() {
   }, [activeCharacterId]);
 
   const playerDisplayName =
-    activeCharacterMeta?.name ?? ownedActiveCharacter?.name ?? "博士";
-
+    activeCharacterMeta?.name ?? ownedActiveCharacter?.name ?? "玩家";
   const playerBattleMedia = activeCharacterMeta?.battleMedia;
 
   const bookmarkedWords = currentSet ? getBookmarkedWords(currentSet.id) : [];
@@ -72,12 +71,12 @@ export default function NotebookBattlePage() {
 
       if (newMonsterHp === 0) {
         addCoins(rewardCoins);
-        setMessage(`你完成了收藏本特訓！獲得 ${rewardCoins} 合成玉！`);
+        setMessage(`你完成了收藏本特訓！獲得 ${rewardCoins} 代幣！`);
         setGameOver(true);
         return;
       }
 
-      setMessage("回答正確！你攻擊了整合運動！");
+      setMessage("回答正確！你攻擊了怪物！");
     } else {
       const newPlayerHp = Math.max(playerHp - wrongDamage, 0);
       setPlayerHp(newPlayerHp);
@@ -88,12 +87,12 @@ export default function NotebookBattlePage() {
       });
 
       if (newPlayerHp === 0) {
-        setMessage("博士，你已經與羅德島失去連接...錯題已保留在當前收藏本中。");
+        setMessage("你被怪物打敗了！錯題已保留在當前收藏本中。");
         setGameOver(true);
         return;
       }
 
-      setMessage("回答錯誤！整合運動攻擊了你！錯題已保留在當前收藏本中。");
+      setMessage("回答錯誤！怪物攻擊了你！錯題已保留在當前收藏本中。");
     }
 
     setQuestion(generateQuestion(bookmarkedWords));
@@ -153,146 +152,148 @@ export default function NotebookBattlePage() {
 
   return (
     <main className="px-3 py-3 sm:px-5 lg:px-8 lg:py-4">
-      <div className="mx-auto flex w-full max-w-7xl flex-col gap-3">
-        <section className="game-panel overflow-hidden p-3 sm:p-4 lg:p-5">
-          <div className="grid gap-3 lg:grid-cols-[1fr_auto_1fr] lg:items-center">
-            <div className="rounded-[24px] border border-cyan-300/15 bg-gradient-to-r from-cyan-400/10 to-slate-950/40 p-3 sm:p-4">
-              <div className="flex items-center gap-3">
-                <div className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-cyan-300/25 bg-cyan-400/10 shadow-[0_0_20px_rgba(34,211,238,0.18)]">
-                  {playerBattleMedia ? (
-                    <CharacterVideo
-                      src={playerBattleMedia}
-                      alt={playerDisplayName}
-                      className="h-full w-full object-contain scale-110"
-                    />
-                  ) : (
-                    <span className="text-3xl">🧙</span>
-                  )}
+      <div className="mx-auto w-full max-w-7xl">
+        <section className="game-panel overflow-hidden p-3 sm:p-4">
+          <div className="grid gap-3 xl:grid-cols-[1fr_270px]">
+            <div className="min-w-0">
+              <div className="grid gap-3 lg:grid-cols-[1fr_auto_1fr] lg:items-center">
+                <div className="rounded-[24px] border border-cyan-300/15 bg-gradient-to-r from-cyan-400/10 to-slate-950/35 p-3">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-[22px] border border-cyan-300/25 bg-cyan-400/10 shadow-[0_0_20px_rgba(34,211,238,0.18)] sm:h-24 sm:w-24">
+                      {playerBattleMedia ? (
+                        <CharacterVideo
+                          src={playerBattleMedia}
+                          alt={playerDisplayName}
+                          className="h-full w-full object-contain scale-125"
+                        />
+                      ) : (
+                        <span className="text-4xl sm:text-5xl">🧙</span>
+                      )}
+                    </div>
+
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="min-w-0">
+                          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-cyan-200/75">
+                            Player
+                          </p>
+                          <h2 className="truncate text-2xl font-black text-white sm:text-3xl">
+                            {playerDisplayName}
+                          </h2>
+                        </div>
+
+                        <div className="shrink-0 text-sm font-bold text-slate-200">
+                          {playerHp}/{playerMaxHp}
+                        </div>
+                      </div>
+
+                      <div className="mt-2 h-3 overflow-hidden rounded-full border border-white/10 bg-slate-900/70">
+                        <div
+                          className="h-full rounded-full bg-gradient-to-r from-emerald-400 to-green-500 transition-all duration-500"
+                          style={{ width: `${playerPercent}%` }}
+                        />
+                      </div>
+
+                      <div className="mt-2 flex gap-1.5">
+                        {Array.from({ length: playerMaxHp }).map((_, index) => (
+                          <span
+                            key={index}
+                            className={`text-lg ${index < playerHp ? "opacity-100" : "opacity-25"}`}
+                          >
+                            ❤️
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center justify-between gap-3">
-                    <div>
-                      <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-cyan-200/75">
-                        Player
-                      </p>
-                      <h2 className="truncate text-2xl font-black text-white">
-                        {playerDisplayName}
-                      </h2>
+                <div className="hidden lg:flex h-14 w-14 items-center justify-center rounded-full border border-white/10 bg-white/5 text-base font-black tracking-[0.2em] text-white">
+                  VS
+                </div>
+
+                <div className="rounded-[24px] border border-rose-300/15 bg-gradient-to-l from-rose-400/10 to-slate-950/35 p-3">
+                  <div className="flex items-center gap-3 lg:flex-row-reverse">
+                    <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-[22px] border border-rose-300/25 bg-rose-400/10 text-4xl shadow-[0_0_20px_rgba(244,63,94,0.18)] sm:h-24 sm:w-24 sm:text-5xl">
+                      👾
                     </div>
 
-                    <div className="shrink-0 text-right text-sm font-bold text-slate-200">
-                      {playerHp} / {playerMaxHp}
-                    </div>
-                  </div>
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-start justify-between gap-3 lg:flex-row-reverse">
+                        <div className="min-w-0 lg:text-right">
+                          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-rose-200/75">
+                            Monster
+                          </p>
+                          <h2 className="truncate text-2xl font-black text-white sm:text-3xl">
+                            怪物
+                          </h2>
+                        </div>
 
-                  <div className="mt-2 h-4 overflow-hidden rounded-full border border-white/10 bg-slate-900/70">
-                    <div
-                      className="flex h-full items-center justify-center rounded-full bg-gradient-to-r from-emerald-400 to-green-500 text-[10px] font-bold text-white transition-all duration-500"
-                      style={{ width: `${playerPercent}%` }}
-                    >
-                      {playerHp}
-                    </div>
-                  </div>
+                        <div className="shrink-0 text-sm font-bold text-slate-200">
+                          {monsterHp}/{monsterMaxHp}
+                        </div>
+                      </div>
 
-                  <div className="mt-2 flex gap-1.5">
-                    {Array.from({ length: playerMaxHp }).map((_, index) => (
-                      <span
-                        key={index}
-                        className={`text-lg ${index < playerHp ? "opacity-100" : "opacity-25"}`}
-                      >
-                        ❤️
-                      </span>
-                    ))}
+                      <div className="mt-2 h-3 overflow-hidden rounded-full border border-white/10 bg-slate-900/70">
+                        <div
+                          className="h-full rounded-full bg-gradient-to-r from-fuchsia-500 to-pink-500 transition-all duration-500"
+                          style={{ width: `${monsterPercent}%` }}
+                        />
+                      </div>
+
+                      <div className="mt-2 flex gap-1.5 lg:justify-end">
+                        {Array.from({ length: monsterMaxHp }).map((_, index) => (
+                          <span
+                            key={index}
+                            className={`h-2.5 w-2.5 rounded-full ${
+                              index < monsterHp
+                                ? "bg-rose-400 shadow-[0_0_10px_rgba(251,113,133,0.7)]"
+                                : "bg-slate-700"
+                            }`}
+                          />
+                        ))}
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
 
-            <div className="hidden lg:flex h-16 w-16 items-center justify-center rounded-full border border-white/10 bg-white/5 text-lg font-black tracking-[0.2em] text-white">
-              VS
-            </div>
+              <div className="mt-3 rounded-[26px] border border-white/10 bg-gradient-to-b from-white/5 to-slate-950/35 p-4 sm:p-5">
+                <div className="text-center">
+                  <div className="mb-2 inline-flex items-center rounded-full border border-amber-300/15 bg-amber-400/10 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.22em] text-amber-200/75">
+                    Notebook Question
+                  </div>
 
-            <div className="rounded-[24px] border border-rose-300/15 bg-gradient-to-l from-rose-400/10 to-slate-950/40 p-3 sm:p-4">
-              <div className="flex items-center gap-3 lg:flex-row-reverse">
-                <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border border-rose-300/25 bg-rose-400/10 text-3xl shadow-[0_0_20px_rgba(244,63,94,0.18)]">
-                  👾
+                  <p className="text-sm text-slate-300">
+                    請選擇這個收藏單詞的正確中文意思
+                  </p>
+
+                  <h1 className="mt-3 break-words text-4xl font-black text-white sm:text-5xl xl:text-6xl">
+                    {question.word}
+                  </h1>
+
+                  <div className="mt-3 flex flex-wrap items-center justify-center gap-2">
+                    <div className="rounded-full border border-amber-300/15 bg-amber-400/10 px-3 py-1.5 text-xs font-semibold text-amber-100">
+                      代幣：{hasHydrated ? coins.toLocaleString() : "讀取中..."}
+                    </div>
+                    <div className="rounded-full border border-violet-300/15 bg-violet-400/10 px-3 py-1.5 text-xs font-semibold text-violet-100">
+                      收藏本：{currentSet.name}
+                    </div>
+                  </div>
                 </div>
 
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center justify-between gap-3 lg:flex-row-reverse">
-                    <div className="lg:text-right">
-                      <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-rose-200/75">
-                        Monster
-                      </p>
-                      <h2 className="truncate text-2xl font-black text-white">
-                        整合運動
-                      </h2>
-                    </div>
-
-                    <div className="shrink-0 text-right text-sm font-bold text-slate-200">
-                      {monsterHp} / {monsterMaxHp}
-                    </div>
-                  </div>
-
-                  <div className="mt-2 h-4 overflow-hidden rounded-full border border-white/10 bg-slate-900/70">
-                    <div
-                      className="flex h-full items-center justify-center rounded-full bg-gradient-to-r from-fuchsia-500 to-pink-500 text-[10px] font-bold text-white transition-all duration-500"
-                      style={{ width: `${monsterPercent}%` }}
-                    >
-                      {monsterHp}
-                    </div>
-                  </div>
-
-                  <div className="mt-2 flex gap-1.5 lg:justify-end">
-                    {Array.from({ length: monsterMaxHp }).map((_, index) => (
-                      <span
-                        key={index}
-                        className={`h-2.5 w-2.5 rounded-full ${
-                          index < monsterHp
-                            ? "bg-rose-400 shadow-[0_0_10px_rgba(251,113,133,0.7)]"
-                            : "bg-slate-700"
-                        }`}
-                      />
-                    ))}
-                  </div>
+                <div className="mt-4">
+                  <AnswerOptions
+                    options={question.options}
+                    onAnswer={checkAnswer}
+                    disabled={gameOver}
+                  />
                 </div>
               </div>
-            </div>
-          </div>
-
-          <div className="mt-3 rounded-[26px] border border-white/10 bg-gradient-to-b from-white/5 to-slate-950/40 px-4 py-5 text-center sm:px-6 sm:py-6">
-            <div className="mb-2 inline-flex items-center rounded-full border border-amber-300/15 bg-amber-400/10 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.22em] text-amber-200/75">
-              Notebook Question
-            </div>
-
-            <p className="text-sm text-slate-300">請選擇這個收藏單詞的正確中文意思</p>
-
-            <h1 className="mt-3 break-words text-4xl font-black text-white sm:text-5xl xl:text-6xl">
-              {question.word}
-            </h1>
-
-            <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
-              <div className="rounded-full border border-amber-300/15 bg-amber-400/10 px-3 py-1.5 text-xs font-semibold text-amber-100">
-                合成玉：{hasHydrated ? coins.toLocaleString() : "讀取中..."}
-              </div>
-              <div className="rounded-full border border-violet-300/15 bg-violet-400/10 px-3 py-1.5 text-xs font-semibold text-violet-100">
-                收藏本：{currentSet.name}
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-3 grid gap-3 xl:grid-cols-[1fr_290px]">
-            <div className="rounded-[24px] border border-white/10 bg-slate-950/30 p-3 sm:p-4">
-              <AnswerOptions
-                options={question.options}
-                onAnswer={checkAnswer}
-                disabled={gameOver}
-              />
             </div>
 
             <div className="flex flex-col gap-3">
-              <div className="rounded-[24px] border border-white/10 bg-white/5 p-4 text-sm leading-7 text-slate-200">
+              <div className="rounded-[24px] border border-white/10 bg-white/5 p-4 text-sm leading-7 text-slate-200 xl:min-h-[150px]">
                 {message}
               </div>
 
