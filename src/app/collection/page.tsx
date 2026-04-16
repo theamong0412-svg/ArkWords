@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useMemo } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useCharacterStore } from "../../store/characterStore";
 import { useCurrencyStore } from "../../store/currencyStore";
 import { useActiveCharacterStore } from "../../store/activeCharacterStore";
@@ -90,6 +91,9 @@ function groupCharacters(characters: GachaCharacter[]): GroupedCharacter[] {
 }
 
 export default function CollectionPage() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
   const { ownedCharacters, removeCharacterById } = useCharacterStore();
   const { coins, addCoins, hasHydrated } = useCurrencyStore();
   const { activeCharacterId, setActiveCharacterId } = useActiveCharacterStore();
@@ -109,6 +113,11 @@ export default function CollectionPage() {
 
   function handleSetActiveCharacter(characterId: number) {
     setActiveCharacterId(characterId);
+
+    const next = searchParams.get("next");
+    if (next) {
+      router.push(next);
+    }
   }
 
   return (
@@ -274,24 +283,24 @@ export default function CollectionPage() {
               })}
             </section>
 
-          <section className="game-panel p-5 sm:p-6">
-  <div className="flex flex-wrap justify-center gap-3">
-    <Link href="/gacha" className="primary-button">
-      繼續抽卡
-    </Link>
+            <section className="game-panel p-5 sm:p-6">
+              <div className="flex flex-wrap justify-center gap-3">
+                <Link href="/gacha" className="primary-button">
+                  繼續抽卡
+                </Link>
 
-    <Link
-      href="/battle-select"
-      className="rounded-2xl bg-gradient-to-r from-sky-500 to-blue-500 px-6 py-3 text-sm font-bold text-white shadow-lg transition duration-300 hover:-translate-y-0.5 hover:shadow-xl sm:text-base"
-    >
-      去冒險
-    </Link>
+                <Link
+                  href="/battle-select"
+                  className="rounded-2xl bg-gradient-to-r from-sky-500 to-blue-500 px-6 py-3 text-sm font-bold text-white shadow-lg transition duration-300 hover:-translate-y-0.5 hover:shadow-xl sm:text-base"
+                >
+                  去冒險
+                </Link>
 
-    <Link href="/" className="secondary-button">
-      回首頁
-    </Link>
-  </div>
-</section>
+                <Link href="/" className="secondary-button">
+                  回首頁
+                </Link>
+              </div>
+            </section>
           </>
         )}
       </div>

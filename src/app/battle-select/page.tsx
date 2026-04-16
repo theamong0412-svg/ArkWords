@@ -4,14 +4,22 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useVocabularyStore } from "../../store/vocabularyStore";
 import { useVocabularySetStore } from "../../store/vocabularySetStore";
+import { useActiveCharacterStore } from "../../store/activeCharacterStore";
 
 export default function BattleSelectPage() {
   const router = useRouter();
   const { selectedSetId, setSelectedSetId } = useVocabularyStore();
   const { sets } = useVocabularySetStore();
+  const { activeCharacterId } = useActiveCharacterStore();
 
   function handleSelect(setId: string) {
     setSelectedSetId(setId);
+
+    if (!activeCharacterId) {
+      router.push("/collection?next=/battle");
+      return;
+    }
+
     router.push("/battle");
   }
 
@@ -30,7 +38,7 @@ export default function BattleSelectPage() {
               </h1>
 
               <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-300 sm:text-base">
-                選擇一個詞庫開始冒險。這裡的詞庫內容會與詞庫管理頁同步。
+                選擇一個詞庫開始冒險。若尚未設定出戰角色，系統會先帶你去收藏頁設定。
               </p>
             </div>
 
