@@ -72,7 +72,7 @@ export default function GachaPage() {
 
   const [result, setResult] = useState<GachaCharacter | null>(null);
   const [message, setMessage] = useState(
-    `花費 ${GACHA_COST} 代幣，試試你的手氣吧！`
+    `花費 ${GACHA_COST} 合成玉，拯救失落的乾員。`
   );
 
   const duplicateCount = useMemo(() => {
@@ -88,7 +88,7 @@ export default function GachaPage() {
     }
 
     if (coins < GACHA_COST) {
-      setMessage("代幣不足，先去冒險賺代幣吧！");
+      setMessage("【錯誤】合成玉不足。");
       return;
     }
 
@@ -101,7 +101,7 @@ export default function GachaPage() {
     addCharacter(character);
     recordPullResult(character.stars);
     setResult(character);
-    setMessage(`恭喜你抽中了 ${character.stars} 星角色：${character.name}！`);
+    setMessage(`你尋訪到了 ${character.stars} 星乾員：${character.name}。`);
   }
 
   return (
@@ -115,11 +115,11 @@ export default function GachaPage() {
               </div>
 
               <h1 className="mt-4 text-3xl font-black text-white sm:text-4xl">
-                抽卡系統
+                尋訪系統
               </h1>
 
               <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-300 sm:text-base">
-                消耗代幣召喚角色，累積抽數吃保底，收集你的專屬角色圖鑑。
+                消耗合成玉尋訪乾員，累積抽數吃保底，收集你的專屬乾員圖鑑吧，博士。
               </p>
             </div>
 
@@ -167,7 +167,7 @@ export default function GachaPage() {
               </div>
 
               <div className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm text-slate-300">
-                單抽消耗 <span className="font-bold text-white">{GACHA_COST}</span> 代幣
+                單次尋訪消耗 <span className="font-bold text-white">{GACHA_COST}</span> 合成玉。
               </div>
             </div>
 
@@ -245,7 +245,7 @@ export default function GachaPage() {
               <p className="text-sm leading-7 text-slate-200">{message}</p>
 
               <button onClick={handleDraw} className="primary-button mt-5 w-full">
-                單抽一次
+                尋訪一次
               </button>
             </div>
 
@@ -286,10 +286,10 @@ export default function GachaPage() {
                   </div>
 
                   <p className="mt-6 text-xl font-bold text-white">
-                    尚未抽出角色
+                    尚未抽出乾員
                   </p>
                   <p className="mt-3 max-w-md text-sm leading-7 text-slate-300">
-                    按下「單抽一次」後，這裡會顯示本次召喚到的角色結果。
+                    尋訪后，這裡會顯示本次尋訪到的乾員結果。
                   </p>
                 </div>
               ) : (
@@ -305,7 +305,7 @@ export default function GachaPage() {
                           result.stars
                         )}`}
                       >
-                        {result.stars} 星角色
+                        {result.stars} 星乾員
                       </div>
 
                       <h3 className="mt-4 text-3xl font-black text-white sm:text-4xl">
@@ -317,7 +317,7 @@ export default function GachaPage() {
                       </p>
 
                       <div className="mt-5 space-y-2 text-sm leading-7 text-slate-300 sm:text-base">
-                        <p>你獲得了一名新角色。</p>
+                        <p>你獲得了一名新乾員。</p>
                         <p>本次稀有度：{result.stars} 星</p>
                         <p>目前同名角色持有數：{duplicateCount}</p>
                       </div>
@@ -340,7 +340,7 @@ export default function GachaPage() {
                           </div>
 
                           <p className="mt-5 text-center text-sm leading-6 text-slate-300">
-                            角色立繪占位區
+                            乾員立繪占位區
                             <br />
                             之後可替換成：
                             <br />

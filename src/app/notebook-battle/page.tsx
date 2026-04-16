@@ -40,7 +40,7 @@ export default function NotebookBattlePage() {
   }, [activeCharacterId]);
 
   const playerDisplayName =
-    activeCharacterMeta?.name ?? ownedActiveCharacter?.name ?? "玩家";
+    activeCharacterMeta?.name ?? ownedActiveCharacter?.name ?? "博士";
 
   const playerBattleMedia = activeCharacterMeta?.battleMedia;
 
@@ -72,12 +72,12 @@ export default function NotebookBattlePage() {
 
       if (newMonsterHp === 0) {
         addCoins(rewardCoins);
-        setMessage(`你完成了收藏本特訓！獲得 ${rewardCoins} 代幣！`);
+        setMessage(`你完成了收藏本特訓！獲得 ${rewardCoins} 合成玉！`);
         setGameOver(true);
         return;
       }
 
-      setMessage("回答正確！你攻擊了怪物！");
+      setMessage("回答正確！你攻擊了整合運動！");
     } else {
       const newPlayerHp = Math.max(playerHp - wrongDamage, 0);
       setPlayerHp(newPlayerHp);
@@ -88,12 +88,12 @@ export default function NotebookBattlePage() {
       });
 
       if (newPlayerHp === 0) {
-        setMessage("你被怪物打敗了！錯題已保留在當前收藏本中。");
+        setMessage("博士，你已經與羅德島失去連接...錯題已保留在當前收藏本中。");
         setGameOver(true);
         return;
       }
 
-      setMessage("回答錯誤！怪物攻擊了你！錯題已保留在當前收藏本中。");
+      setMessage("回答錯誤！整合運動攻擊了你！錯題已保留在當前收藏本中。");
     }
 
     setQuestion(generateQuestion(bookmarkedWords));
@@ -226,7 +226,7 @@ export default function NotebookBattlePage() {
                         Monster
                       </p>
                       <h2 className="truncate text-2xl font-black text-white">
-                        怪物
+                        整合運動
                       </h2>
                     </div>
 
@@ -274,7 +274,7 @@ export default function NotebookBattlePage() {
 
             <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
               <div className="rounded-full border border-amber-300/15 bg-amber-400/10 px-3 py-1.5 text-xs font-semibold text-amber-100">
-                代幣：{hasHydrated ? coins.toLocaleString() : "讀取中..."}
+                合成玉：{hasHydrated ? coins.toLocaleString() : "讀取中..."}
               </div>
               <div className="rounded-full border border-violet-300/15 bg-violet-400/10 px-3 py-1.5 text-xs font-semibold text-violet-100">
                 收藏本：{currentSet.name}
