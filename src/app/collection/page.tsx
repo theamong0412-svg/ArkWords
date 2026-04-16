@@ -86,7 +86,7 @@ function groupCharacters(characters: GachaCharacter[]): GroupedCharacter[] {
 
 export default function CollectionPage() {
   const { ownedCharacters, removeCharacterById } = useCharacterStore();
-  const { addCoins } = useCurrencyStore();
+  const { coins, addCoins, hasHydrated } = useCurrencyStore();
 
   const groupedCharacters = useMemo(() => {
     return groupCharacters(ownedCharacters);
@@ -116,7 +116,7 @@ export default function CollectionPage() {
               </p>
             </div>
 
-            <div className="grid gap-3 sm:grid-cols-2 lg:min-w-[360px]">
+            <div className="grid gap-3 sm:grid-cols-3 lg:min-w-[520px]">
               <div className="rounded-2xl border border-cyan-300/15 bg-cyan-400/10 p-4">
                 <p className="text-xs font-semibold uppercase tracking-[0.18em] text-cyan-200/70">
                   Unique Characters
@@ -132,6 +132,15 @@ export default function CollectionPage() {
                 </p>
                 <p className="mt-2 text-2xl font-black text-white">
                   {ownedCharacters.length}
+                </p>
+              </div>
+
+              <div className="rounded-2xl border border-amber-300/15 bg-amber-400/10 p-4">
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-amber-200/70">
+                  Coins
+                </p>
+                <p className="mt-2 text-2xl font-black text-amber-100">
+                  {hasHydrated ? coins : "讀取中..."}
                 </p>
               </div>
             </div>
