@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useMemo } from "react";
 import { useCharacterStore } from "../../store/characterStore";
 import { useCurrencyStore } from "../../store/currencyStore";
+import { useActiveCharacterStore } from "../../store/activeCharacterStore";
 import type { GachaCharacter } from "../../data/gachaPool";
 
 type GroupedCharacter = {
@@ -11,6 +12,8 @@ type GroupedCharacter = {
   name: string;
   stars: 3 | 4 | 5 | 6;
   count: number;
+  portrait?: string;
+  battleMedia?: string;
 };
 
 function getStarStyle(stars: 3 | 4 | 5 | 6) {
@@ -72,6 +75,8 @@ function groupCharacters(characters: GachaCharacter[]): GroupedCharacter[] {
         name: character.name,
         stars: character.stars,
         count: 1,
+        portrait: character.portrait,
+        battleMedia: character.battleMedia,
       });
     }
   }
@@ -87,14 +92,23 @@ function groupCharacters(characters: GachaCharacter[]): GroupedCharacter[] {
 export default function CollectionPage() {
   const { ownedCharacters, removeCharacterById } = useCharacterStore();
   const { coins, addCoins, hasHydrated } = useCurrencyStore();
+  const { activeCharacterId, setActiveCharacterId } = useActiveCharacterStore();
 
   const groupedCharacters = useMemo(() => {
     return groupCharacters(ownedCharacters);
   }, [ownedCharacters]);
 
+  const activeCharacter = groupedCharacters.find(
+    (character) => character.id === activeCharacterId
+  );
+
   function handleDismissCharacter(characterId: number) {
     addCoins(20);
     removeCharacterById(characterId);
+  }
+
+  function handleSetActiveCharacter(characterId: number) {
+    setActiveCharacterId(characterId);
   }
 
   return (
@@ -112,7 +126,7 @@ export default function CollectionPage() {
               </h1>
 
               <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-300 sm:text-base">
-                查看你已擁有的角色圖鑑，依照星級收集、管理與整理你的抽卡成果。
+                在這裡管理角色、設置當前出戰角色。戰鬥頁只會顯示你目前選中的出戰角色動畫。
               </p>
             </div>
 
@@ -148,8 +162,17 @@ export default function CollectionPage() {
         </section>
 
         <section className="game-panel p-5 sm:p-6">
-          <div className="rounded-2xl border border-amber-300/15 bg-amber-400/10 p-4 text-center text-sm leading-7 text-amber-100">
-            每次解雇 1 張角色，可回收 <span className="font-black">20 代幣</span>。
+          <div className="grid gap-4 lg:grid-cols-2">
+            <div className="rounded-2xl border border-amber-300/15 bg-amber-400/10 p-4 text-sm leading-7 text-amber-100">
+              每次解雇 1 張角色，可回收 <span className="font-black">20 代幣</span>。
+            </div>
+
+            <div className="rounded-2xl border border-violet-300/15 bg-violet-400/10 p-4 text-sm leading-7 text-violet-100">
+              當前出戰角色：
+              <span className="ml-2 font-black text-white">
+                {activeCharacter?.name ?? "尚未設定"}
+              </span>
+            </div>
           </div>
         </section>
 
@@ -180,62 +203,75 @@ export default function CollectionPage() {
         ) : (
           <>
             <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
-              {groupedCharacters.map((character) => (
-                <article
-                  key={character.id}
-                  className={`group overflow-hidden rounded-[28px] border p-5 transition duration-300 hover:-translate-y-1 hover:shadow-2xl ${getCardStyle(
-                    character.stars
-                  )}`}
-                >
-                  <div className="flex items-start justify-between gap-3">
-                    <div
-                      className={`inline-flex rounded-full border px-4 py-2 text-sm font-bold ${getStarStyle(
-                        character.stars
-                      )}`}
-                    >
-                      {character.stars} 星
-                    </div>
+              {groupedCharacters.map((character) => {
+                const isActive = activeCharacterId === character.id;
 
-                    <div className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-sm font-semibold text-slate-300">
-                      × {character.count}
-                    </div>
-                  </div>
+                return (
+                  <article
+                    key={character.id}
+                    className={`group overflow-hidden rounded-[28px] border p-5 transition duration-300 hover:-translate-y-1 hover:shadow-2xl ${getCardStyle(
+                      character.stars
+                    )}`}
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <div
+                        className={`inline-flex rounded-full border px-4 py-2 text-sm font-bold ${getStarStyle(
+                          character.stars
+                        )}`}
+                      >
+                        {character.stars} 星
+                      </div>
 
-                  <div className="mt-5 flex items-center justify-center">
-                    <div className="relative flex h-44 w-full items-center justify-center overflow-hidden rounded-[24px] border border-white/10 bg-slate-950/40">
-                      <div className="absolute h-32 w-32 rounded-full bg-violet-500/20 blur-3xl" />
-                      <div className="relative z-10 text-6xl">
-                        {getCharacterIcon(character.stars)}
+                      <div className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-sm font-semibold text-slate-300">
+                        × {character.count}
                       </div>
                     </div>
-                  </div>
 
-                  <div className="mt-5">
-                    <h2 className="text-2xl font-black text-white">
-                      {character.name}
-                    </h2>
-                    <p className="mt-2 text-sm text-slate-400">
-                      角色編號：#{character.id}
-                    </p>
-                    <p className="mt-3 text-sm leading-7 text-slate-300">
-                      角色立繪可在之後替換成：
-                      <br />
-                      <span className="font-mono text-xs text-cyan-200">
-                        /public/characters/{character.name}.png
-                      </span>
-                    </p>
-                  </div>
+                    <div className="mt-5 flex items-center justify-center">
+                      <div className="relative flex h-44 w-full items-center justify-center overflow-hidden rounded-[24px] border border-white/10 bg-slate-950/40">
+                        <div className="absolute h-32 w-32 rounded-full bg-violet-500/20 blur-3xl" />
+                        <div className="relative z-10 text-6xl">
+                          {getCharacterIcon(character.stars)}
+                        </div>
+                      </div>
+                    </div>
 
-                  <div className="mt-6 flex flex-wrap gap-3">
-                    <button
-                      onClick={() => handleDismissCharacter(character.id)}
-                      className="rounded-2xl bg-gradient-to-r from-rose-500 to-red-500 px-5 py-3 text-sm font-bold text-white shadow-lg transition duration-300 hover:-translate-y-0.5 hover:shadow-xl"
-                    >
-                      解雇 1 張（+20 代幣）
-                    </button>
-                  </div>
-                </article>
-              ))}
+                    <div className="mt-5">
+                      <h2 className="text-2xl font-black text-white">
+                        {character.name}
+                      </h2>
+                      <p className="mt-2 text-sm text-slate-400">
+                        角色編號：#{character.id}
+                      </p>
+                      <p className="mt-3 text-sm leading-7 text-slate-300">
+                        收藏頁與抽卡頁之後只顯示靜態立繪。
+                        <br />
+                        戰鬥頁才會使用對應角色動畫。
+                      </p>
+                    </div>
+
+                    <div className="mt-6 flex flex-wrap gap-3">
+                      <button
+                        onClick={() => handleSetActiveCharacter(character.id)}
+                        className={
+                          isActive
+                            ? "rounded-2xl bg-gradient-to-r from-violet-500 to-fuchsia-500 px-5 py-3 text-sm font-bold text-white shadow-lg"
+                            : "rounded-2xl bg-gradient-to-r from-sky-500 to-blue-500 px-5 py-3 text-sm font-bold text-white shadow-lg transition duration-300 hover:-translate-y-0.5 hover:shadow-xl"
+                        }
+                      >
+                        {isActive ? "當前出戰" : "設為出戰"}
+                      </button>
+
+                      <button
+                        onClick={() => handleDismissCharacter(character.id)}
+                        className="rounded-2xl bg-gradient-to-r from-rose-500 to-red-500 px-5 py-3 text-sm font-bold text-white shadow-lg transition duration-300 hover:-translate-y-0.5 hover:shadow-xl"
+                      >
+                        解雇 1 張（+20 代幣）
+                      </button>
+                    </div>
+                  </article>
+                );
+              })}
             </section>
 
             <section className="game-panel p-5 sm:p-6">

@@ -6,20 +6,32 @@ import { useCurrencyStore } from "../../store/currencyStore";
 import { useNotebookStore } from "../../store/notebookStore";
 import { useVocabularyStore } from "../../store/vocabularyStore";
 import { useVocabularySetStore } from "../../store/vocabularySetStore";
+import { useCharacterStore } from "../../store/characterStore";
+import { useActiveCharacterStore } from "../../store/activeCharacterStore";
 import { generateQuestion } from "../../lib/question";
 import { GAME_BALANCE } from "../../config/gameBalance";
-import BattleStatus from "../../components/battle/BattleStatus";
 import AnswerOptions from "../../components/battle/AnswerOptions";
+import CharacterVideo from "../../components/ui/CharacterVideo";
 
 export default function NotebookBattlePage() {
   const { coins, addCoins, hasHydrated } = useCurrencyStore();
   const { selectedSetId } = useVocabularyStore();
   const { sets } = useVocabularySetStore();
   const { getBookmarkedWords, addBookmarkedWord } = useNotebookStore();
+  const { ownedCharacters } = useCharacterStore();
+  const { activeCharacterId } = useActiveCharacterStore();
 
   const currentSet = useMemo(() => {
     return sets.find((setItem) => setItem.id === selectedSetId) ?? sets[0];
   }, [sets, selectedSetId]);
+
+  const activeCharacter = useMemo(() => {
+    if (!activeCharacterId) return null;
+    return ownedCharacters.find((character) => character.id === activeCharacterId) ?? null;
+  }, [ownedCharacters, activeCharacterId]);
+
+  const playerDisplayName = activeCharacter?.name ?? "玩家";
+  const playerBattleMedia = activeCharacter?.battleMedia;
 
   const bookmarkedWords = currentSet ? getBookmarkedWords(currentSet.id) : [];
 
@@ -86,9 +98,12 @@ export default function NotebookBattlePage() {
     setGameOver(false);
   }
 
+  const playerPercent = Math.max(0, (playerHp / playerMaxHp) * 100);
+  const monsterPercent = Math.max(0, (monsterHp / monsterMaxHp) * 100);
+
   if (!currentSet || bookmarkedWords.length < 4 || !question) {
     return (
-      <main className="px-3 py-4 sm:px-6 lg:px-8 lg:py-6">
+      <main className="px-4 py-8 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-3xl">
           <section className="game-panel p-8 text-center sm:p-10">
             <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full border border-amber-300/20 bg-amber-300/10 text-4xl">
@@ -141,97 +156,181 @@ export default function NotebookBattlePage() {
   }
 
   return (
-    <main className="px-3 py-4 sm:px-6 lg:px-8 lg:py-6">
-      <div className="mx-auto flex w-full max-w-6xl flex-col gap-4">
-        <section className="game-panel overflow-hidden p-5 sm:p-6">
-          <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
-            <div>
-              <div className="inline-flex items-center gap-2 rounded-full border border-amber-300/20 bg-amber-400/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-amber-200/80">
-                Notebook Training
+    <main className="px-3 py-3 sm:px-5 lg:px-8 lg:py-4">
+      <div className="mx-auto flex w-full max-w-7xl flex-col gap-3">
+        <section className="game-panel overflow-hidden p-3 sm:p-4 lg:p-5">
+          <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-3 xl:flex-row xl:items-start xl:justify-between">
+              <div className="w-full xl:max-w-[320px]">
+                <div className="rounded-[24px] border border-cyan-300/15 bg-gradient-to-br from-cyan-400/10 to-slate-950/60 p-3 sm:p-4">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-cyan-300/25 bg-cyan-400/10 shadow-[0_0_25px_rgba(34,211,238,0.18)]">
+                      {playerBattleMedia ? (
+                        <CharacterVideo
+                          src={playerBattleMedia}
+                          alt={playerDisplayName}
+                          className="h-full w-full object-contain scale-110"
+                        />
+                      ) : (
+                        <span className="text-4xl">🧙</span>
+                      )}
+                    </div>
+
+                    <div className="min-w-0 flex-1">
+                      <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-cyan-200/75">
+                        Player
+                      </p>
+                      <h2 className="mt-1 text-2xl font-black text-white">
+                        {playerDisplayName}
+                      </h2>
+                    </div>
+                  </div>
+
+                  <div className="mt-3">
+                    <div className="mb-1.5 flex items-center justify-between text-xs font-semibold uppercase tracking-[0.14em] text-slate-300">
+                      <span>HP</span>
+                      <span>
+                        {playerHp} / {playerMaxHp}
+                      </span>
+                    </div>
+
+                    <div className="h-4 overflow-hidden rounded-full border border-white/10 bg-slate-900/70">
+                      <div
+                        className="flex h-full items-center justify-center rounded-full bg-gradient-to-r from-emerald-400 to-green-500 text-[10px] font-bold text-white transition-all duration-500"
+                        style={{ width: `${playerPercent}%` }}
+                      >
+                        {playerHp}
+                      </div>
+                    </div>
+
+                    <div className="mt-2 flex gap-1.5">
+                      {Array.from({ length: playerMaxHp }).map((_, index) => (
+                        <span
+                          key={index}
+                          className={`text-lg transition ${
+                            index < playerHp ? "opacity-100" : "opacity-25"
+                          }`}
+                        >
+                          ❤️
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
               </div>
 
-              <h1 className="mt-4 text-3xl font-black text-white sm:text-4xl">
-                收藏本特訓
-              </h1>
+              <div className="order-3 w-full xl:order-2 xl:flex-1">
+                <div className="rounded-[26px] border border-white/10 bg-gradient-to-b from-white/5 to-slate-950/40 px-4 py-5 text-center sm:px-6 sm:py-6">
+                  <div className="mb-2 inline-flex items-center rounded-full border border-amber-300/15 bg-amber-400/10 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.22em] text-amber-200/75">
+                    Notebook Question
+                  </div>
 
-              <p className="mt-3 text-sm leading-7 text-slate-300 sm:text-base">
-                專門複習收藏本中的單詞。答對即可攻擊怪物，完成特訓可獲得代幣獎勵。
-              </p>
+                  <p className="text-sm text-slate-300">
+                    請選擇這個收藏單詞的正確中文意思
+                  </p>
+
+                  <h1 className="mt-3 break-words text-4xl font-black text-white sm:text-5xl xl:text-6xl">
+                    {question.word}
+                  </h1>
+
+                  <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
+                    <div className="rounded-full border border-amber-300/15 bg-amber-400/10 px-3 py-1.5 text-xs font-semibold text-amber-100">
+                      代幣：{hasHydrated ? coins.toLocaleString() : "讀取中..."}
+                    </div>
+                    <div className="rounded-full border border-violet-300/15 bg-violet-400/10 px-3 py-1.5 text-xs font-semibold text-violet-100">
+                      收藏本：{currentSet.name}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="order-2 w-full xl:order-3 xl:max-w-[320px]">
+                <div className="rounded-[24px] border border-rose-300/15 bg-gradient-to-br from-rose-400/10 to-slate-950/60 p-3 sm:p-4">
+                  <div className="flex items-center gap-3 xl:flex-row-reverse">
+                    <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl border border-rose-300/25 bg-rose-400/10 text-4xl shadow-[0_0_25px_rgba(244,63,94,0.18)]">
+                      👾
+                    </div>
+
+                    <div className="min-w-0 flex-1 xl:text-right">
+                      <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-rose-200/75">
+                        Monster
+                      </p>
+                      <h2 className="mt-1 text-2xl font-black text-white">
+                        怪物
+                      </h2>
+                    </div>
+                  </div>
+
+                  <div className="mt-3">
+                    <div className="mb-1.5 flex items-center justify-between text-xs font-semibold uppercase tracking-[0.14em] text-slate-300">
+                      <span>HP</span>
+                      <span>
+                        {monsterHp} / {monsterMaxHp}
+                      </span>
+                    </div>
+
+                    <div className="h-4 overflow-hidden rounded-full border border-white/10 bg-slate-900/70">
+                      <div
+                        className="flex h-full items-center justify-center rounded-full bg-gradient-to-r from-fuchsia-500 to-pink-500 text-[10px] font-bold text-white transition-all duration-500"
+                        style={{ width: `${monsterPercent}%` }}
+                      >
+                        {monsterHp}
+                      </div>
+                    </div>
+
+                    <div className="mt-2 flex gap-1.5 xl:justify-end">
+                      {Array.from({ length: monsterMaxHp }).map((_, index) => (
+                        <span
+                          key={index}
+                          className={`h-2.5 w-2.5 rounded-full transition ${
+                            index < monsterHp
+                              ? "bg-rose-400 shadow-[0_0_10px_rgba(251,113,133,0.7)]"
+                              : "bg-slate-700"
+                          }`}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
 
-            <div className="grid gap-3 sm:grid-cols-2 lg:min-w-[360px]">
-              <div className="rounded-2xl border border-amber-300/15 bg-amber-400/10 p-4">
-                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-amber-200/70">
-                  Coins
-                </p>
-                <p className="mt-2 text-2xl font-black text-amber-100">
-                  {hasHydrated ? coins.toLocaleString() : "讀取中..."}
-                </p>
+            <div className="grid gap-3 xl:grid-cols-[1fr_290px]">
+              <div className="rounded-[24px] border border-white/10 bg-slate-950/30 p-3 sm:p-4">
+                <AnswerOptions
+                  options={question.options}
+                  onAnswer={checkAnswer}
+                  disabled={gameOver}
+                />
               </div>
 
-              <div className="rounded-2xl border border-violet-300/15 bg-violet-400/10 p-4">
-                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-violet-200/70">
-                  Current Notebook
-                </p>
-                <p className="mt-2 text-lg font-black text-white">
-                  {currentSet.name}
-                </p>
+              <div className="flex flex-col gap-3">
+                <div className="rounded-[24px] border border-white/10 bg-white/5 p-4 text-sm leading-7 text-slate-200">
+                  {message}
+                </div>
+
+                <div className="rounded-[24px] border border-white/10 bg-slate-950/35 p-4">
+                  <div className="flex flex-wrap gap-2">
+                    {gameOver && (
+                      <button onClick={restartGame} className="primary-button w-full">
+                        重新開始
+                      </button>
+                    )}
+
+                    <Link
+                      href="/notebook"
+                      className="w-full rounded-2xl bg-gradient-to-r from-amber-500 to-orange-500 px-6 py-3 text-center text-sm font-bold text-white shadow-lg transition duration-300 hover:-translate-y-0.5 hover:shadow-xl"
+                    >
+                      返回收藏本
+                    </Link>
+
+                    <Link href="/" className="secondary-button w-full justify-center">
+                      回首頁
+                    </Link>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-        </section>
-
-        <BattleStatus
-          playerHp={playerHp}
-          playerMaxHp={playerMaxHp}
-          monsterHp={monsterHp}
-          monsterMaxHp={monsterMaxHp}
-        />
-
-        <section className="game-panel overflow-hidden p-4 sm:p-6">
-          <div className="rounded-[24px] border border-white/10 bg-slate-950/35 p-4 sm:p-6">
-            <p className="text-center text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
-              Notebook Question
-            </p>
-
-            <p className="mt-3 text-center text-sm text-slate-300">
-              請選擇這個收藏單詞的正確中文意思
-            </p>
-
-            <h2 className="mt-4 break-words text-center text-3xl font-black text-white sm:text-4xl lg:text-5xl">
-              {question.word}
-            </h2>
-          </div>
-
-          <div className="mt-4">
-            <AnswerOptions
-              options={question.options}
-              onAnswer={checkAnswer}
-              disabled={gameOver}
-            />
-          </div>
-
-          <div className="mt-4 rounded-[22px] border border-white/10 bg-white/5 px-4 py-4 text-center text-sm leading-7 text-slate-200 sm:text-base">
-            {message}
-          </div>
-
-          <div className="mt-5 flex flex-wrap items-center justify-center gap-3">
-            {gameOver && (
-              <button onClick={restartGame} className="primary-button">
-                重新開始
-              </button>
-            )}
-
-            <Link
-              href="/notebook"
-              className="rounded-2xl bg-gradient-to-r from-amber-500 to-orange-500 px-6 py-3 text-sm font-bold text-white shadow-lg transition duration-300 hover:-translate-y-0.5 hover:shadow-xl sm:text-base"
-            >
-              返回收藏本
-            </Link>
-
-            <Link href="/" className="secondary-button">
-              回首頁
-            </Link>
           </div>
         </section>
       </div>
