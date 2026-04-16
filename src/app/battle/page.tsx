@@ -28,8 +28,8 @@ export default function BattlePage() {
   const wrongDamage = GAME_BALANCE.battle.wrongDamage;
   const rewardCoins = GAME_BALANCE.battle.rewardCoins;
 
-  const [playerHp, setPlayerHp] = useState(playerMaxHp);
-  const [monsterHp, setMonsterHp] = useState(monsterMaxHp);
+  const [playerHp, setPlayerHp] = useState<number>(playerMaxHp);
+const [monsterHp, setMonsterHp] = useState<number>(monsterMaxHp);
   const [message, setMessage] = useState("請選擇正確的中文意思");
   const [gameOver, setGameOver] = useState(false);
   const [question, setQuestion] = useState(() =>
