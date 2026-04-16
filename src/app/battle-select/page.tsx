@@ -4,25 +4,15 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useVocabularyStore } from "../../store/vocabularyStore";
 import { useVocabularySetStore } from "../../store/vocabularySetStore";
-import { useActiveCharacterStore } from "../../store/activeCharacterStore";
 
 export default function BattleSelectPage() {
   const router = useRouter();
   const { selectedSetId, setSelectedSetId } = useVocabularyStore();
   const { sets } = useVocabularySetStore();
-  const { activeCharacterId, hasHydrated } = useActiveCharacterStore();
 
   function handleSelect(setId: string) {
-    if (!hasHydrated) return;
-
     setSelectedSetId(setId);
-
-    if (!activeCharacterId) {
-      router.replace("/collection?next=/battle");
-      return;
-    }
-
-    router.replace("/battle");
+    router.push("/battle");
   }
 
   return (
@@ -40,7 +30,7 @@ export default function BattleSelectPage() {
               </h1>
 
               <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-300 sm:text-base">
-                選擇一個詞庫開始冒險。若尚未設定出戰角色，系統會先帶你去收藏頁設定。
+                選擇一個詞庫開始冒險。出戰角色可在收藏頁自由設定，但不是開始戰鬥的前置條件。
               </p>
             </div>
 
@@ -67,13 +57,7 @@ export default function BattleSelectPage() {
           </div>
         </section>
 
-        {!hasHydrated ? (
-          <section className="game-panel p-8 text-center sm:p-10">
-            <p className="text-lg font-semibold text-slate-200">
-              正在讀取出戰角色資料...
-            </p>
-          </section>
-        ) : sets.length === 0 ? (
+        {sets.length === 0 ? (
           <section className="game-panel p-8 text-center sm:p-10">
             <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-full border border-white/10 bg-white/5 text-5xl">
               ⚔️
@@ -150,10 +134,10 @@ export default function BattleSelectPage() {
 
                     <button
                       onClick={() => handleSelect(setItem.id)}
-                      disabled={!canBattle || !hasHydrated}
+                      disabled={!canBattle}
                       className={[
                         "mt-5 w-full rounded-2xl px-5 py-3 text-sm font-bold transition duration-300 sm:text-base",
-                        canBattle && hasHydrated
+                        canBattle
                           ? "bg-gradient-to-r from-sky-500 to-blue-500 text-white shadow-lg hover:-translate-y-0.5 hover:shadow-xl"
                           : "cursor-not-allowed bg-slate-700 text-slate-300",
                       ].join(" ")}
@@ -179,10 +163,10 @@ export default function BattleSelectPage() {
                 </Link>
 
                 <Link
-                  href="/notebook"
-                  className="rounded-2xl bg-gradient-to-r from-amber-500 to-orange-500 px-6 py-3 text-sm font-bold text-white shadow-lg transition duration-300 hover:-translate-y-0.5 hover:shadow-xl sm:text-base"
+                  href="/collection"
+                  className="rounded-2xl bg-gradient-to-r from-pink-500 to-rose-500 px-6 py-3 text-sm font-bold text-white shadow-lg transition duration-300 hover:-translate-y-0.5 hover:shadow-xl sm:text-base"
                 >
-                  我的收藏本
+                  去設置出戰角色
                 </Link>
               </div>
             </section>

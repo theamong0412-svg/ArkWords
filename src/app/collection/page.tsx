@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useMemo } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+
 import { useCharacterStore } from "../../store/characterStore";
 import { useCurrencyStore } from "../../store/currencyStore";
 import { useActiveCharacterStore } from "../../store/activeCharacterStore";
@@ -91,9 +91,7 @@ function groupCharacters(characters: GachaCharacter[]): GroupedCharacter[] {
 }
 
 export default function CollectionPage() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-
+ 
   const { ownedCharacters, removeCharacterById } = useCharacterStore();
   const { coins, addCoins, hasHydrated } = useCurrencyStore();
   const { activeCharacterId, setActiveCharacterId } = useActiveCharacterStore();
@@ -113,13 +111,7 @@ export default function CollectionPage() {
 
   function handleSetActiveCharacter(characterId: number) {
   setActiveCharacterId(characterId);
-
-  const next = searchParams.get("next");
-  if (next) {
-    router.replace(next);
-  }
 }
-
   return (
     <main className="px-3 py-4 sm:px-6 lg:px-8 lg:py-6">
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-4">
