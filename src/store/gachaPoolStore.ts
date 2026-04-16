@@ -24,7 +24,8 @@ export const useGachaPoolStore = create<GachaPoolState>()(
             {
               id: Date.now(),
               name: character.name,
-              rarity: character.rarity,
+        
+              stars: character.stars,
             },
           ],
         })),

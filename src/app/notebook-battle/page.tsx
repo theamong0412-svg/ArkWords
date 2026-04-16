@@ -22,15 +22,14 @@ export default function NotebookBattlePage() {
   }, [sets, selectedSetId]);
 
   const bookmarkedWords = currentSet ? getBookmarkedWords(currentSet.id) : [];
+const playerMaxHp: number = GAME_BALANCE.battle.playerMaxHp;
+const monsterMaxHp: number = GAME_BALANCE.battle.monsterMaxHp;
+const correctDamage: number = GAME_BALANCE.battle.correctDamage;
+const wrongDamage: number = GAME_BALANCE.battle.wrongDamage;
+const rewardCoins: number = GAME_BALANCE.battle.rewardCoins;
 
-  const playerMaxHp = GAME_BALANCE.notebookBattle.playerMaxHp;
-  const monsterMaxHp = GAME_BALANCE.notebookBattle.monsterMaxHp;
-  const correctDamage = GAME_BALANCE.notebookBattle.correctDamage;
-  const wrongDamage = GAME_BALANCE.notebookBattle.wrongDamage;
-  const rewardCoins = GAME_BALANCE.notebookBattle.rewardCoins;
-
-  const [playerHp, setPlayerHp] = useState(playerMaxHp);
-  const [monsterHp, setMonsterHp] = useState(monsterMaxHp);
+const [playerHp, setPlayerHp] = useState<number>(playerMaxHp);
+const [monsterHp, setMonsterHp] = useState<number>(monsterMaxHp);
   const [message, setMessage] = useState("請選擇收藏本單詞的正確意思");
   const [gameOver, setGameOver] = useState(false);
 
