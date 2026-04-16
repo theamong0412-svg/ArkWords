@@ -18,15 +18,18 @@ export default function WordList({
   isBookmarked,
 }: WordListProps) {
   return (
-    <div className="bg-white rounded-2xl shadow p-6">
-      <h2 className="text-2xl font-bold text-slate-800 mb-2">單詞列表</h2>
+    <div className="rounded-[24px] border border-white/10 bg-white/5 p-5">
+      <h2 className="text-2xl font-black text-white mb-2">單詞列表</h2>
 
-      <p className="text-slate-600 mb-4">
-        目前查看詞庫：<span className="font-semibold">{selectedSetName}</span>
+      <p className="text-slate-300 mb-5 leading-7">
+        目前查看詞庫：
+        <span className="ml-1 font-bold text-violet-200">{selectedSetName}</span>
       </p>
 
       {words.length === 0 ? (
-        <p className="text-slate-500">這個詞庫目前還沒有單詞。</p>
+        <div className="rounded-2xl border border-dashed border-white/10 bg-slate-950/30 px-4 py-8 text-center text-slate-400">
+          這個詞庫目前還沒有單詞。
+        </div>
       ) : (
         <div className="space-y-3">
           {words.map((item) => {
@@ -35,22 +38,24 @@ export default function WordList({
             return (
               <div
                 key={item.word}
-                className="flex items-center justify-between bg-slate-50 border border-slate-200 rounded-xl px-4 py-3"
+                className="flex flex-col gap-4 rounded-[22px] border border-white/10 bg-slate-950/35 px-4 py-4 transition duration-300 hover:border-white/20 hover:bg-slate-900/50 lg:flex-row lg:items-center lg:justify-between"
               >
-                <div>
-                  <p className="text-lg font-semibold text-slate-800">
+                <div className="min-w-0">
+                  <p className="break-words text-lg font-bold text-white">
                     {item.word}
                   </p>
-                  <p className="text-slate-600">{item.meaning}</p>
+                  <p className="mt-1 break-words text-slate-300">
+                    {item.meaning}
+                  </p>
                 </div>
 
-                <div className="flex gap-2 flex-wrap justify-end">
+                <div className="flex flex-wrap gap-2 lg:justify-end">
                   <button
                     onClick={() => onToggleBookmark(item)}
-                    className={`px-4 py-2 rounded-lg transition text-white ${
+                    className={`rounded-xl px-4 py-2 text-sm font-bold text-white transition ${
                       bookmarked
-                        ? "bg-amber-500 hover:bg-amber-600"
-                        : "bg-emerald-600 hover:bg-emerald-700"
+                        ? "bg-gradient-to-r from-amber-500 to-orange-500 hover:shadow-lg"
+                        : "bg-gradient-to-r from-emerald-500 to-teal-500 hover:shadow-lg"
                     }`}
                   >
                     {bookmarked ? "已收藏" : "收藏"}
@@ -58,7 +63,7 @@ export default function WordList({
 
                   <button
                     onClick={() => onDeleteWord(item.word)}
-                    className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition"
+                    className="rounded-xl bg-gradient-to-r from-rose-500 to-red-500 px-4 py-2 text-sm font-bold text-white transition hover:shadow-lg"
                   >
                     刪除
                   </button>

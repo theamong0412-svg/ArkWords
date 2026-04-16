@@ -96,29 +96,30 @@ export default function BulkImportForm({
   }
 
   return (
-    <div className="bg-white rounded-2xl shadow p-6 mb-6">
-      <h2 className="text-2xl font-bold text-slate-800 mb-2">批量導入單詞</h2>
+    <div className="rounded-[24px] border border-white/10 bg-white/5 p-5">
+      <h2 className="text-2xl font-black text-white mb-2">批量導入單詞</h2>
 
-      <p className="text-slate-600 mb-4">
-        目前導入到詞庫：<span className="font-semibold">{selectedSetName}</span>
+      <p className="text-slate-300 mb-5 leading-7">
+        目前導入到詞庫：
+        <span className="ml-1 font-bold text-cyan-200">{selectedSetName}</span>
       </p>
 
       <textarea
         value={text}
         onChange={(e) => setText(e.target.value)}
         placeholder={`take off=起飛；脫下\nlook forward to,期待`}
-        className="w-full h-48 border border-slate-300 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-green-400 mb-4 resize-none"
+        className="mb-4 h-48 w-full resize-none rounded-[24px] border border-white/10 bg-slate-950/50 px-4 py-4 text-white placeholder:text-slate-500 outline-none transition focus:border-emerald-300/30 focus:ring-2 focus:ring-emerald-400/20"
       />
 
-      <div className="flex flex-wrap gap-3 items-center">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <button
           onClick={handleImport}
-          className="bg-emerald-600 text-white px-5 py-3 rounded-xl hover:bg-emerald-700 transition"
+          className="rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-500 px-5 py-3 text-sm font-bold text-white shadow-lg transition duration-300 hover:-translate-y-0.5 hover:shadow-xl sm:text-base"
         >
           批量導入
         </button>
 
-        <p className="text-sm text-slate-600">{message}</p>
+        <p className="text-sm leading-7 text-slate-300">{message}</p>
       </div>
     </div>
   );
