@@ -9,8 +9,8 @@ const navItems = [
   { href: "/", label: "首頁" },
   { href: "/battle-select", label: "冒險" },
   { href: "/vocabulary", label: "詞庫" },
-  { href: "/gacha", label: "抽卡" },
-  { href: "/collection", label: "收藏" },
+  { href: "/gacha", label: "尋訪" },
+  { href: "/collection", label: "乾員" },
   { href: "/notebook", label: "收藏本" },
   { href: "/notebook-battle", label: "特訓" },
 ];
@@ -29,22 +29,23 @@ export default function SiteNavbar() {
     <header className="sticky top-0 z-50 border-b border-[#4f3928]/70 bg-[#0f0b09]/88 backdrop-blur-xl">
       <div className="mx-auto w-full max-w-7xl px-3 py-2 sm:px-4 lg:px-6">
         <div className="relative overflow-hidden rounded-[16px] border border-[#5e4634]/80 bg-[linear-gradient(180deg,rgba(28,20,16,0.94),rgba(16,11,9,0.96))] shadow-[0_12px_28px_rgba(0,0,0,0.28)]">
-          <div className="absolute inset-x-0 top-0 h-8 bg-gradient-to-b from-[#cf7d29]/8 to-transparent" />
-          <div className="absolute inset-0 opacity-[0.035] bg-[linear-gradient(rgba(255,236,214,0.16)_1px,transparent_1px),linear-gradient(90deg,rgba(255,236,214,0.08)_1px,transparent_1px)] bg-[size:24px_24px]" />
+          <div className="pointer-events-none absolute inset-x-0 top-0 h-8 bg-gradient-to-b from-[#cf7d29]/8 to-transparent" />
+          <div className="pointer-events-none absolute inset-0 opacity-[0.035] bg-[linear-gradient(rgba(255,236,214,0.16)_1px,transparent_1px),linear-gradient(90deg,rgba(255,236,214,0.08)_1px,transparent_1px)] bg-[size:24px_24px]" />
 
-          <div className="relative flex h-14 items-center justify-between gap-2 px-3 sm:h-15 sm:px-4">
+          <div className="relative flex h-14 items-center justify-between gap-2 px-3 sm:px-4">
             <Link
               href="/"
               className="group flex min-w-0 items-center gap-2.5"
               onClick={() => setMenuOpen(false)}
             >
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[12px] border border-[#c48239]/60 bg-gradient-to-br from-[#c97827] to-[#6e3914] text-lg font-black text-[#fff4df] shadow-[0_0_14px_rgba(201,120,39,0.16)] transition duration-300 group-hover:scale-105">
-                W
+              <div className="relative flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-[12px] border border-[#c48239]/60 bg-gradient-to-br from-[#c97827] to-[#6e3914] text-lg font-black text-[#fff4df] shadow-[0_0_14px_rgba(201,120,39,0.16)] transition duration-300 group-hover:scale-105">
+                <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(135deg,rgba(255,239,218,0.14),transparent_45%)]" />
+                <span className="relative">W</span>
               </div>
 
               <div className="min-w-0">
                 <p className="truncate text-xl font-black leading-none text-[#fff1d8] sm:text-2xl">
-                  Word RPG
+                  Arkwords
                 </p>
               </div>
             </Link>
@@ -54,7 +55,7 @@ export default function SiteNavbar() {
                 <span className="text-sm">🪙</span>
                 <div className="leading-none">
                   <p className="text-[9px] uppercase tracking-[0.18em] text-[#b99466]">
-                    Supply
+                    合成玉
                   </p>
                   <p className="mt-1 text-xs font-bold text-[#fff1d8] sm:text-sm">
                     {hasHydrated ? coins.toLocaleString() : "..."}
@@ -94,21 +95,24 @@ export default function SiteNavbar() {
           </div>
 
           {menuOpen && (
-            <div className="border-t border-[#4f3928]/60 bg-[#120d0a]/96 px-3 py-3 sm:px-4">
-              <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="relative border-t border-[#4f3928]/60 bg-[#120d0a]/96 px-3 py-3 sm:px-4">
+              <div className="pointer-events-none absolute inset-0 opacity-[0.04] bg-[linear-gradient(rgba(255,236,214,0.12)_1px,transparent_1px),linear-gradient(90deg,rgba(255,236,214,0.06)_1px,transparent_1px)] bg-[size:22px_22px]" />
+
+              <div className="relative grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
                 {navItems.map((item) => (
                   <Link
                     key={item.href}
                     href={item.href}
                     onClick={() => setMenuOpen(false)}
                     className={[
-                      "rounded-[12px] border px-3 py-3 text-sm font-semibold transition",
+                      "relative overflow-hidden rounded-[12px] border px-3 py-3 text-sm font-semibold transition",
                       isActive(item.href)
                         ? "border-[#d49a58] bg-[linear-gradient(180deg,#cf7d29_0%,#8f4a17_100%)] text-[#1a110c]"
                         : "border-[#5f4937] bg-[#1a1410]/92 text-[#e5d2b3] hover:border-[#b27a45] hover:bg-[#261c16] hover:text-[#fff1d8]",
                     ].join(" ")}
                   >
-                    {item.label}
+                    <div className="pointer-events-none absolute inset-0 opacity-[0.06] bg-[linear-gradient(135deg,rgba(255,240,220,0.25),transparent_40%)]" />
+                    <span className="relative">{item.label}</span>
                   </Link>
                 ))}
               </div>
