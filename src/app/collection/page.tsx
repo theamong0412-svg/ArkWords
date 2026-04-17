@@ -284,9 +284,9 @@ export default function CollectionPage() {
                         乾員編號：#{character.id}
                       </p>
                       <p className="mt-3 text-sm leading-7 text-[#d7c2a4]">
-                        收藏頁與抽卡頁會顯示靜態立繪。
+                        博士。
                         <br />
-                        戰鬥頁會顯示對應角色動畫。
+                        歡迎回家。
                       </p>
                     </div>
 

@@ -85,15 +85,15 @@ export default function Home() {
             </div>
 
             <h1 className="relative mt-5 max-w-3xl text-4xl font-black leading-tight text-[#fff1d9] sm:text-5xl lg:text-6xl">
-              【已連接至羅德島】博士，您好。
+              博士，你醒了？
               <span className="block bg-gradient-to-r from-[#f0cf9d] via-[#d98a45] to-[#b56a31] bg-clip-text text-transparent">
-                你願意用單詞，拯救失落的泰拉大陸嗎？
+                獻出心臟吧！
               </span>
             </h1>
 
             <p className="relative mt-5 max-w-2xl text-base leading-8 text-[#d7c2a4] sm:text-lg">
               答題戰鬥累積合成玉，廢墟中尋找乾員。
-              注意，此詞表網站是你在終末之時與方舟的最後連結。
+              此網站是你在終末之時與方舟的最後連結。
             </p>
 
             <div className="relative mt-8 flex flex-wrap gap-4">

@@ -39,7 +39,9 @@ export const gachaPool: GachaCharacter[] = [
   portrait: "/characters/yuejianye.png",
   battleMedia: "/characters/yuejianye.webm",},
   { id: 22, name: "玫蘭莎", stars: 3 },
-  { id: 23, name: "梓蘭", stars: 3 },
+  { id: 23, name: "梓蘭", stars: 3 ,
+  portrait: "/characters/zilan.png",
+  battleMedia: "/characters/zilan.webm",},
 
   { id: 24, name: "調香師", stars: 4 },
   { id: 25, name: "礫", stars: 4 },
