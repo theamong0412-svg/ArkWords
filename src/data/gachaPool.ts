@@ -62,7 +62,9 @@ export const gachaPool: GachaCharacter[] = [
   { id: 42, name: "古米", stars: 4 },
   { id: 43, name: "豆苗", stars: 4 },
 
-  { id: 44, name: "羽毛筆", stars: 5 },
+  { id: 44, name: "羽毛筆", stars: 5 ,
+  portrait: "/characters/yumaobi.png",
+  battleMedia: "/characters/yumaobi.webm",},
   { id: 45, name: "絮雨", stars: 5 },
   { id: 46, name: "洋灰", stars: 5 ,
   portrait: "/characters/yanghui.png",
