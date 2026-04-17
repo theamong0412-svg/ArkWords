@@ -5,7 +5,7 @@ import { useMemo } from "react";
 import { useNotebookStore } from "../../store/notebookStore";
 import { useVocabularyStore } from "../../store/vocabularyStore";
 import { useVocabularySetStore } from "../../store/vocabularySetStore";
-import NotebookWordList from "../../components/notebook/NotebookWordList";
+import NotebookWordList from "../../app/notebook/NotebookWordList";
 
 export default function NotebookPage() {
   const { selectedSetId, setSelectedSetId } = useVocabularyStore();
