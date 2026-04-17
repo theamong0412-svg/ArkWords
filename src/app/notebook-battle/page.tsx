@@ -156,85 +156,88 @@ export default function NotebookBattlePage() {
         <section className="terminal-shell cut-panel noise-overlay p-2.5 sm:p-4 lg:p-5">
           <div className="grid gap-3 xl:grid-cols-[minmax(0,1fr)_280px]">
             <div className="min-w-0 space-y-3">
-              {/* mobile */}
-              <div className="space-y-3 lg:hidden">
-                <div className="rounded-[20px] border border-[#6c533f] bg-[linear-gradient(180deg,rgba(31,22,18,0.96),rgba(16,12,10,0.98))] p-3">
-                  <div className="grid grid-cols-[88px_minmax(0,1fr)] items-center gap-3">
-                    <div className="flex h-[88px] w-[88px] items-center justify-center overflow-hidden rounded-[18px] border border-[#7a614d] bg-[#201710]">
-                      {playerBattleMedia ? (
-                        <CharacterVideo
-                          src={playerBattleMedia}
-                          alt={playerDisplayName}
-                          className="h-full w-full scale-[2.15] object-contain"
-                        />
-                      ) : (
-                        <span className="text-4xl">🧙</span>
-                      )}
-                    </div>
+             {/* mobile */}
+<div className="space-y-2.5 lg:hidden">
+  <div className="rounded-[18px] border border-[#6c533f] bg-[linear-gradient(180deg,rgba(31,22,18,0.96),rgba(16,12,10,0.98))] p-3">
+    <div className="grid grid-cols-[88px_minmax(0,1fr)] items-center gap-3">
+      <div className="flex h-[88px] w-[88px] items-center justify-center overflow-hidden rounded-[16px] border border-[#7a614d] bg-[#201710]">
+        {playerBattleMedia ? (
+          <CharacterVideo
+            src={playerBattleMedia}
+            alt={playerDisplayName}
+            className="h-full w-full scale-[2.1] object-contain"
+          />
+        ) : (
+          <span className="text-4xl">🧙</span>
+        )}
+      </div>
 
-                    <div className="min-w-0">
-                      <p className="truncate text-2xl font-black text-[#fff1d8]">
-                        {playerDisplayName}
-                      </p>
+      <div className="min-w-0">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#d09f6b]/80">
+          Player
+        </p>
+        <p className="mt-1 truncate text-2xl font-black text-[#fff1d8]">
+          {playerDisplayName}
+        </p>
 
-                      <div className="mt-2">
-                        <div className="mb-1 flex items-center justify-between text-[11px] font-bold text-[#d7c2a4]">
-                          <span>HP</span>
-                          <span>
-                            {playerHp}/{playerMaxHp}
-                          </span>
-                        </div>
+        <div className="mt-2">
+          <div className="mb-1 flex items-center justify-between text-[11px] font-bold text-[#d7c2a4]">
+            <span>HP</span>
+            <span>
+              {playerHp}/{playerMaxHp}
+            </span>
+          </div>
 
-                        <div className="h-2 overflow-hidden rounded-full border border-white/10 bg-slate-900/70">
-                          <div
-                            className="h-full rounded-full bg-gradient-to-r from-emerald-400 to-green-500 transition-all duration-500"
-                            style={{ width: `${playerPercent}%` }}
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+          <div className="h-2 overflow-hidden rounded-full border border-white/10 bg-slate-900/70">
+            <div
+              className="h-full rounded-full bg-gradient-to-r from-emerald-400 to-green-500 transition-all duration-500"
+              style={{ width: `${playerPercent}%` }}
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-                <div className="rounded-[20px] border border-[#6c533f] bg-[linear-gradient(180deg,rgba(31,22,18,0.96),rgba(16,12,10,0.98))] p-3">
-                  <div className="grid grid-cols-[minmax(0,1fr)_88px] items-center gap-3">
-                    <div className="min-w-0">
-                      <p className="truncate text-2xl font-black text-[#fff1d8]">
-                        怪物
-                      </p>
+  <div className="rounded-[18px] border border-[#6c533f] bg-[linear-gradient(180deg,rgba(31,22,18,0.96),rgba(16,12,10,0.98))] p-3">
+    <div className="grid grid-cols-[minmax(0,1fr)_88px] items-center gap-3">
+      <div className="min-w-0">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#d09f6b]/80">
+          Monster
+        </p>
+        <p className="mt-1 truncate text-2xl font-black text-[#fff1d8]">
+          怪物
+        </p>
 
-                      <div className="mt-2">
-                        <div className="mb-1 flex items-center justify-between text-[11px] font-bold text-[#d7c2a4]">
-                          <span>HP</span>
-                          <span>
-                            {monsterHp}/{monsterMaxHp}
-                          </span>
-                        </div>
+        <div className="mt-2">
+          <div className="mb-1 flex items-center justify-between text-[11px] font-bold text-[#d7c2a4]">
+            <span>HP</span>
+            <span>
+              {monsterHp}/{monsterMaxHp}
+            </span>
+          </div>
 
-                        <div className="h-2 overflow-hidden rounded-full border border-white/10 bg-slate-900/70">
-                          <div
-                            className="h-full rounded-full bg-gradient-to-r from-orange-500 to-red-500 transition-all duration-500"
-                            style={{ width: `${monsterPercent}%` }}
-                          />
-                        </div>
-                      </div>
-                    </div>
+          <div className="h-2 overflow-hidden rounded-full border border-white/10 bg-slate-900/70">
+            <div
+              className="h-full rounded-full bg-gradient-to-r from-orange-500 to-red-500 transition-all duration-500"
+              style={{ width: `${monsterPercent}%` }}
+            />
+          </div>
+        </div>
+      </div>
 
-                    <div className="flex h-[88px] w-[88px] items-center justify-center rounded-[18px] border border-[#7a614d] bg-[#201710] text-4xl">
-                      👾
-                    </div>
-                  </div>
-                </div>
+      <div className="flex h-[88px] w-[88px] items-center justify-center rounded-[16px] border border-[#7a614d] bg-[#201710] text-4xl">
+        👾
+      </div>
+    </div>
+  </div>
 
-                <div className="rounded-[20px] border border-[#6c533f] bg-[linear-gradient(180deg,rgba(34,24,18,0.96),rgba(17,12,10,0.98))] px-4 py-5 text-center">
-                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#d09f6b]/80">
-                    Question
-                  </p>
-                  <h1 className="mt-3 break-words text-5xl font-black leading-none text-[#fff1d8]">
-                    {question.word}
-                  </h1>
-                </div>
-              </div>
+  <div className="rounded-[18px] border border-[#6c533f] bg-[linear-gradient(180deg,rgba(34,24,18,0.96),rgba(17,12,10,0.98))] px-4 py-5 text-center">
+    <h1 className="break-words text-5xl font-black leading-none text-[#fff1d8]">
+      {question.word}
+    </h1>
+  </div>
+</div>
 
               {/* desktop */}
               <div className="hidden rounded-[28px] border border-[#6c533f] bg-[linear-gradient(180deg,rgba(32,23,18,0.95),rgba(17,12,10,0.96))] p-4 sm:p-5 lg:block">
