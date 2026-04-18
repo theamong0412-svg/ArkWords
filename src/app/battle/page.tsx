@@ -190,7 +190,7 @@ export default function BattlePage() {
           <CharacterVideo
             src={playerBattleMedia}
             alt={playerDisplayName}
-            className="h-full w-full scale-[2.2] -translate-y-2 object-contain"
+            className="h-full w-full scale-[2.2] -translate-y-3 object-contain"
           />
         ) : (
           <span className="text-4xl">🧙</span>
