@@ -246,35 +246,36 @@ export default function CollectionPage() {
                       </div>
                     </div>
 
-                    <div className="relative z-10 mt-5 flex items-center justify-center">
-                      <div className="relative flex h-48 w-full items-center justify-center overflow-hidden rounded-[24px] border border-[#6d5440]/60 bg-[linear-gradient(180deg,rgba(23,17,14,0.96),rgba(15,11,9,0.98))] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]">
-                        <div
-                          className={`absolute h-36 w-36 rounded-full blur-3xl ${getPortraitGlow(
-                            character.stars
-                          )}`}
-                        />
+                  <div className="relative z-10 mt-5 flex items-center justify-center">
+  <div className="relative w-full max-w-[320px] overflow-hidden rounded-[24px] border border-[#6d5440]/60 bg-[linear-gradient(180deg,rgba(23,17,14,0.96),rgba(15,11,9,0.98))] shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]">
+    <div className="pointer-events-none absolute inset-0 opacity-[0.05] bg-[linear-gradient(rgba(255,236,214,0.12)_1px,transparent_1px),linear-gradient(90deg,rgba(255,236,214,0.06)_1px,transparent_1px)] bg-[size:22px_22px]" />
 
-                        <div className="absolute inset-x-6 top-4 h-px bg-gradient-to-r from-transparent via-[#ddb07d]/25 to-transparent" />
-                        <div className="absolute inset-x-6 bottom-4 h-px bg-gradient-to-r from-transparent via-[#ddb07d]/15 to-transparent" />
+    <div
+      className={`pointer-events-none absolute left-1/2 top-1/2 h-44 w-44 -translate-x-1/2 -translate-y-1/2 rounded-full blur-3xl ${getPortraitGlow(
+        character.stars
+      )}`}
+    />
 
-                        {characterMeta.portrait ? (
-                          <div className="relative z-10 h-full w-full">
-                            <Image
-                              src={characterMeta.portrait}
-                              alt={character.name}
-                              fill
-                              className="object-contain"
-                              sizes="(max-width: 1280px) 50vw, 320px"
-                            />
-                          </div>
-                        ) : (
-                          <div className="relative z-10 flex h-full w-full items-center justify-center text-6xl">
-                            {getCharacterIcon(character.stars)}
-                          </div>
-                        )}
-                      </div>
-                    </div>
+    <div className="pointer-events-none absolute inset-x-6 top-4 h-px bg-gradient-to-r from-transparent via-[#ddb07d]/25 to-transparent" />
+    <div className="pointer-events-none absolute inset-x-6 bottom-4 h-px bg-gradient-to-r from-transparent via-[#ddb07d]/15 to-transparent" />
 
+    <div className="relative aspect-[1/1] w-full sm:aspect-[1/1.02]">
+      {characterMeta.portrait ? (
+        <Image
+          src={characterMeta.portrait}
+          alt={character.name}
+          fill
+          className="object-contain object-center scale-110"
+          sizes="(max-width: 640px) 70vw, (max-width: 1280px) 34vw, 320px"
+        />
+      ) : (
+        <div className="relative z-10 flex h-full w-full items-center justify-center text-7xl">
+          {getCharacterIcon(character.stars)}
+        </div>
+      )}
+    </div>
+  </div>
+</div>
                     <div className="relative z-10 mt-5">
                       <p className="console-code">Operator Archive</p>
                       <h2 className="mt-2 text-2xl font-black text-[#fff1d8]">
