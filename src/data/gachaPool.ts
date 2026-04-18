@@ -7,7 +7,9 @@ export type GachaCharacter = {
 };
 
 export const gachaPool: GachaCharacter[] = [
-  { id: 1, name: "芬", stars: 3 },
+  { id: 1, name: "芬", stars: 3 ,
+  portrait: "/characters/fen.png",
+  battleMedia: "/characters/fen.webm",},
   { id: 2, name: "克洛絲", stars: 3 },
   { id: 3, name: "米格魯", stars: 3 },
   { id: 4, name: "孑", stars: 4 ,
