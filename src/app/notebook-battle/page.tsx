@@ -248,7 +248,7 @@ export default function NotebookBattlePage() {
                         <CharacterVideo
                           src={playerBattleMedia}
                           alt={playerDisplayName}
-                          className="h-full w-full scale-[2.2] object-contain"
+                          className="h-full w-full scale-[2.2] -translate-y-2 object-contain"
                         />
                       ) : (
                         <span className="text-5xl sm:text-6xl">🧙</span>
