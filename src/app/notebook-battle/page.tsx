@@ -13,6 +13,7 @@ import { GAME_BALANCE } from "../../config/gameBalance";
 import { gachaPool } from "../../data/gachaPool";
 import AnswerOptions from "../../components/battle/AnswerOptions";
 import CharacterVideo from "../../components/ui/CharacterVideo";
+import Image from "next/image";
 
 export default function NotebookBattlePage() {
   const { coins, addCoins, hasHydrated } = useCurrencyStore();
@@ -107,9 +108,10 @@ export default function NotebookBattlePage() {
     setQuestion(generateQuestion(bookmarkedWords));
     setGameOver(false);
   }
-
+const monsterImage = "/monsters/monster-1.png";
   const playerPercent = Math.max(0, (playerHp / playerMaxHp) * 100);
   const monsterPercent = Math.max(0, (monsterHp / monsterMaxHp) * 100);
+const monsterBattleMedia = "/monsters/monster.webm";
 
   if (!currentSet || bookmarkedWords.length < 4 || !question) {
     return (
@@ -226,9 +228,13 @@ export default function NotebookBattlePage() {
         </div>
       </div>
 
-      <div className="flex h-[88px] w-[88px] items-center justify-center rounded-[16px] border border-[#7a614d] bg-[#201710] text-4xl">
-        👾
-      </div>
+     <div className="flex h-[88px] w-[88px] items-center justify-center overflow-hidden rounded-[16px] border border-[#7a614d] bg-[#201710]">
+  <CharacterVideo
+    src={monsterBattleMedia}
+    alt="怪物"
+    className="h-full w-full object-contain scale-x-[-1]"
+  />
+</div>
     </div>
   </div>
 
@@ -302,10 +308,13 @@ export default function NotebookBattlePage() {
                   </div>
 
                   <div className="flex flex-col items-center text-center">
-                    <div className="flex h-40 w-40 items-center justify-center rounded-[24px] border border-[#8f744f]/40 bg-[#2a1d14] text-5xl shadow-[0_0_24px_rgba(201,120,39,0.1)] sm:h-44 sm:w-44 sm:text-6xl">
-                      👾
-                    </div>
-
+             <div className="flex h-40 w-40 items-center justify-center overflow-hidden rounded-[24px] border border-[#8f744f]/40 bg-[#2a1d14] shadow-[0_0_24px_rgba(201,120,39,0.1)] sm:h-44 sm:w-44">
+  <CharacterVideo
+    src={monsterBattleMedia}
+    alt="怪物"
+    className="h-full w-full object-contain scale-x-[-1]"
+  />
+</div>
                     <p className="mt-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#d09f6b]/80">
                       Monster
                     </p>
