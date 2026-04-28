@@ -258,7 +258,7 @@ const monsterBattleMedia = "/monsters/monster.webm";
   <CharacterVideo
     src={monsterBattleMedia}
     alt="怪物"
-    className="h-full w-full object-contain scale-x-[-1]"
+    className="h-full w-full object-contain scale-[2.2] scale-x-[-1]"
   />
 </div>
     </div>
@@ -338,7 +338,7 @@ const monsterBattleMedia = "/monsters/monster.webm";
   <CharacterVideo
     src={monsterBattleMedia}
     alt="怪物"
-    className="h-full w-full object-contain scale-x-[-1]"
+  className="h-full w-full object-contain scale-[2.2] scale-x-[-1] -translate-y-2"
   />
 </div>
 
